@@ -82,10 +82,12 @@
   .ww-tabbar { margin: 0 14px; background: rgba(255,255,255,0.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 20px; box-shadow: 0 12px 28px rgba(27,36,48,0.16); display: flex; justify-content: space-between; gap: 2px; padding: 8px 10px; overflow-x: auto; scrollbar-width: none; pointer-events: auto; }
   .ww-tabbar::-webkit-scrollbar { display: none; }
   .ww-tabbar-item { flex: 0 0 52px; width: 52px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; color: var(--color-text-muted); padding: 4px 1px; border-radius: 12px; }
-  .ww-tabbar-icon { width: 30px; height: 30px; border-radius: 50%; border: 1.3px solid var(--color-accent); color: var(--color-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ww-tabbar-icon { width: 30px; height: 30px; border-radius: 50%; border: 1.3px solid var(--color-accent); color: var(--color-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s ease, transform 0.1s ease; }
   .ww-tabbar-label { font-size: 9px; font-weight: 500; text-align: center; line-height: 1.15; width: 100%; }
   .ww-tabbar-item.active .ww-tabbar-icon { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
   .ww-tabbar-item.active .ww-tabbar-label { color: var(--color-text); font-weight: 700; }
+  .ww-tabbar-item:not(.active):hover .ww-tabbar-icon { background: var(--color-accent-bg); }
+  .ww-tabbar-item:not(.active):active .ww-tabbar-icon { transform: scale(0.92); background: var(--color-accent-bg); }
 </style>
 </head>
 <body>
