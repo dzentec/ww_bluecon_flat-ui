@@ -193,7 +193,7 @@
           </div>
         </div>
         <div class="pair-heading">Remote Unit found</div>
-        <div class="pair-found-name" id="found-name">WW-EDGE-4F21A8</div>
+        <div class="pair-found-name" id="found-name">WW-REMOTE-4F21A8</div>
         <div class="pair-sub">Signal −51 dBm — close enough for a reliable pairing.</div>
         <div class="pair-actions">
           <button class="btn-primary-full" onclick="confirmPair()">Add to this Central Unit</button>
@@ -257,7 +257,7 @@ function trySave(){
   }, 900);
 }
 
-let PAIRED = { id:'cur', name:'WW-EDGE-B01C44', signal:'−58 dBm' };
+let PAIRED = { id:'cur', name:'WW-REMOTE-B01C44', signal:'−58 dBm' };
 function renderEdges(){
   const list = document.getElementById('edge-list');
   const pairBtn = document.getElementById('pair-btn');
@@ -318,7 +318,7 @@ function startSearch(){
   window._pairTimer = setTimeout(()=>{ showPairState('found'); }, 1600);
 }
 function confirmPair(){
-  PAIRED = { id:'cur', name:'WW-EDGE-4F21A8', signal:'−51 dBm' };
+  PAIRED = { id:'cur', name:'WW-REMOTE-4F21A8', signal:'−51 dBm' };
   closePairOverlay();
   toast('Remote Unit paired');
 }

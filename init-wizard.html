@@ -49,7 +49,7 @@
   .choice-card { display: flex; align-items: center; gap: 14px; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: 16px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.15s ease; }
   .choice-card:hover { border-color: var(--color-accent); }
   .choice-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--color-accent-bg); color: var(--color-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .choice-text { flex: 1; min-width: 0; }
+  .choice-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   .choice-title { font-size: 14.5px; font-weight: 600; }
   .choice-sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; line-height: 1.4; }
   .choice-chevron { color: var(--color-text-faint); flex-shrink: 0; }
@@ -101,7 +101,7 @@
 
   .found-device-card { display: flex; align-items: center; gap: 12px; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: 14px; padding: 13px; margin-top: 18px; width: 100%; max-width: 280px; text-align: left; }
   .found-device-icon { width: 38px; height: 38px; border-radius: 10px; background: #EEF0F2; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); flex-shrink: 0; }
-  .found-device-info { flex: 1; min-width: 0; }
+  .found-device-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   .found-device-name { font-size: 13.5px; font-weight: 600; }
   .found-device-sub { font-size: 11px; color: var(--color-text-faint); margin-top: 1px; }
 
@@ -202,9 +202,15 @@
     <div class="content" id="a-content">
 
       <div class="wiz-screen centered active" id="a-screen-entry">
-        <div class="screen-title" style="padding:0;margin-bottom:4px;">Set Up New Device</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 18px;">Choose how you'd like to add this device.</div>
+        <div class="screen-title" style="padding:0;margin-bottom:4px;">WW BlueCon</div>
+        <div class="screen-sub" style="padding:0;margin:-2px 0 18px;">Connect to a device, or set up a new one.</div>
         <div style="width:100%;">
+          <div class="choice-card" onclick="window.location.href='device-scan.html'">
+            <span class="choice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg></span>
+            <span class="choice-text"><span class="choice-title">Connect to Existing Device</span><span class="choice-sub">Scan for a device you've already set up, nearby via Bluetooth</span></span>
+            <span class="choice-chevron">›</span>
+          </div>
+          <div class="section-heading" style="text-align:left;margin:20px 0 10px;">Set Up New Device</div>
           <div class="choice-card" onclick="chooseQR('a')">
             <span class="choice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M17 20h3"/></svg></span>
             <span class="choice-text"><span class="choice-title">Scan QR Code</span><span class="choice-sub">Fastest way — for a factory-new device with its box or label</span></span>
