@@ -326,22 +326,7 @@
       <div class="wiz-screen centered" id="a-screen-apply-config">
         <div class="screen-title" style="padding:0;margin-bottom:4px;">Apply Preset?</div>
         <div class="screen-sub" style="padding:0;margin:-2px 0 14px;">Choose a saved preset to apply instead of setting up Data Port, I/O Ports, and Network by hand. A preset covers both roles — the Remote half is auto-generated from whichever Central config it was saved from, and vice versa.</div>
-        <div id="a-job-profile-picker" style="width:100%;max-width:280px;">
-          <button type="button" class="profile-pick-row active" onclick="selectJobProfile('a',event)">
-            <div>
-              <div class="profile-pick-name">Downtown Branch</div>
-              <div class="profile-pick-summary">Central+W2+R2IO</div>
-            </div>
-            <span class="profile-pick-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          </button>
-          <button type="button" class="profile-pick-row" onclick="selectJobProfile('a',event)">
-            <div>
-              <div class="profile-pick-name">Warehouse Entrance</div>
-              <div class="profile-pick-summary">Central+W2+R2IO</div>
-            </div>
-            <span class="profile-pick-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          </button>
-        </div>
+        <div id="a-job-profile-picker" style="width:100%;max-width:280px;"></div>
         <button class="btn-primary-full" id="a-apply-config-btn" onclick="applyStagedConfig('a',event)">Apply Preset</button>
         <button class="btn-ghost-full" onclick="skipStagedConfig('a')">Set Up Manually Instead</button>
       </div>
@@ -556,9 +541,31 @@
 
 <script>
 const wiz = {
-  a: { path: null, qrOutcome: 'found', verifyOutcome: 'ok', pohSignal: 'weak', countdownTimer: null, countdownSeconds: 10, lockout: false, secDirty: false },
-  b: { path: null, qrOutcome: 'found', verifyOutcome: 'ok', pohSignal: 'weak', countdownTimer: null, countdownSeconds: 10, lockout: false, secDirty: false },
+  a: { path: null, qrOutcome: 'found', verifyOutcome: 'ok', pohSignal: 'weak', countdownTimer: null, countdownSeconds: 10, lockout: false, secDirty: false, selectedPresetIndex: 0 },
+  b: { path: null, qrOutcome: 'found', verifyOutcome: 'ok', pohSignal: 'weak', countdownTimer: null, countdownSeconds: 10, lockout: false, secDirty: false, selectedPresetIndex: 0 },
 };
+
+// Same saved presets as stored-presets.html — every one shows up here, not just a hardcoded couple.
+const storedPresets = [
+  { name: 'Downtown Branch', config: 'Central+W2+R2IO' },
+  { name: 'Warehouse Entrance', config: 'Central+R2IO' },
+  { name: 'Retail Plaza A', config: 'Central+W2' },
+  { name: 'Parking Garage B', config: 'Central+W2+R2IO' },
+];
+function renderJobProfiles(v){
+  const picker = document.getElementById(v+'-job-profile-picker');
+  if(!picker) return;
+  picker.innerHTML = storedPresets.map((p,i) => `
+    <button type="button" class="profile-pick-row${i === wiz[v].selectedPresetIndex ? ' active' : ''}" onclick="selectJobProfile('${v}',event,${i})">
+      <div>
+        <div class="profile-pick-name">${p.name}</div>
+        <div class="profile-pick-summary">${p.config}</div>
+      </div>
+      <span class="profile-pick-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+    </button>`).join('');
+}
+renderJobProfiles('a');
+renderJobProfiles('b');
 
 function showVariant(v, e){
   document.querySelectorAll('.variant').forEach(el=>el.classList.remove('active'));
@@ -821,7 +828,8 @@ function trySaveMandatorySec(v){
     showScreen(v, 'apply-config', '');
   }, 900);
 }
-function selectJobProfile(v, evt){
+function selectJobProfile(v, evt, i){
+  wiz[v].selectedPresetIndex = i;
   document.querySelectorAll('#' + v + '-job-profile-picker .profile-pick-row').forEach(r => r.classList.remove('active'));
   evt.currentTarget.classList.add('active');
 }
