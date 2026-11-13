@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW BlueCon — R2IO Settings</title>
+<link rel="stylesheet" href="themes/default.css">
+<style>
+  :root {
+    --color-bg: #F4F5F7; --color-surface: #FFFFFF; --color-border: #E7E9EC;
+    --color-text: #1B2430; --color-text-muted: rgba(27, 36, 48, 0.68); --color-text-faint: rgba(27, 36, 48, 0.65);
+    --color-primary: #1B2430; --color-primary-hover: #0F151D; --color-accent: #3E7BFA;
+    --color-danger: #D34247; --color-success: #2BA23E;
+    --color-danger-bg: #FDECEC; --color-success-bg: #E9F8EC; --color-accent-bg: #EAF1FF;
+    --font-sans: Arial, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    --text-heading: 20px; --text-body: 15px; --text-label: 13px;
+    --radius-card: 20px; --radius-sm: 12px; --radius-pill: 999px;
+    --shadow-card: 0 16px 32px rgba(27, 36, 48, 0.06); --shadow-card-sm: 0 6px 16px rgba(27, 36, 48, 0.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: #DDE1E6; color: var(--color-text); padding: 40px 16px 80px; }
+  button { font-family: var(--font-sans); }
+
+  .phone { width: 375px; margin: 0 auto; background: var(--color-bg); border-radius: 36px; box-shadow: 0 30px 60px rgba(10,14,20,0.35), 0 0 0 10px #15181d, 0 0 0 11px #2a2e35; overflow: hidden; height: 760px; display: flex; flex-direction: column; position: relative; }
+  .status-ios { height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; font-weight: 600; color: var(--color-text); flex-shrink: 0; }
+
+  .shell-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 6px; flex-shrink: 0; }
+  .role-badge { background: var(--color-primary); color: #fff; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-pill); }
+  .conn-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #1C7F2C; }
+  .conn-status .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); flex-shrink: 0; }
+  .shell-header-right { display: flex; align-items: center; gap: 10px; }
+  .exit-device-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; color: var(--color-text-muted); text-decoration: none; flex-shrink: 0; }
+  .exit-device-btn:hover { background: rgba(27, 36, 48, 0.08); color: var(--color-text); }
+
+  .screen-title-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px; flex-shrink: 0; }
+  .back-btn { appearance: none; border: none; background: none; color: var(--color-text); cursor: pointer; padding: 2px; display: flex; flex-shrink: 0; }
+  .screen-title-text { font-size: var(--text-heading); font-weight: 600; }
+
+  .board-meta { margin: 0 24px 16px; }
+  .board-meta-line { font-size: 13.5px; color: var(--color-text-muted); line-height: 1.5; }
+
+  .content { flex: 1; overflow-y: auto; padding-bottom: 24px; }
+
+  .section-card { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card-sm); margin: 0 24px 16px; padding: 18px; }
+  .section-title { font-size: 17px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; }
+  .section-intro { font-size: 12.5px; color: var(--color-text-faint); line-height: 1.5; margin-bottom: 14px; }
+  .subsection-divider { height: 1px; background: var(--color-border); margin: 16px 0; }
+  .subsection-heading { font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 10px; }
+
+  .preset-table { width: 100%; border-collapse: collapse; border: 1px solid var(--color-border); border-radius: var(--radius-sm); overflow: hidden; }
+  .preset-table th { background: #EEF0F2; font-size: 11.5px; font-weight: 600; color: var(--color-text); text-align: left; padding: 9px 12px; }
+  .preset-table th b { font-weight: 700; }
+  .preset-table td { font-size: 13px; color: var(--color-text); padding: 9px 12px; border-top: 1px solid var(--color-border); }
+
+  .io-port-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .io-seg { display: flex; background: #EAECEF; border-radius: 8px; padding: 2px; width: 150px; }
+  .io-seg button { flex: 1; appearance: none; border: none; background: transparent; color: var(--color-text-muted); font-size: 11.5px; font-weight: 600; padding: 6px 2px; border-radius: 6px; cursor: pointer; }
+  .io-seg button.active { background: #fff; color: var(--color-primary); box-shadow: 0 1px 4px rgba(27,36,48,0.12); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status-ios"><span>9:41</span><span>●●●●  5G  🔋</span></div>
+  <div class="shell-header">
+    <span class="role-badge">Central Unit</span>
+    <div class="shell-header-right">
+      <span class="conn-status"><span class="status-dot"></span>Connected</span>
+      <a class="exit-device-btn" href="device-scan.html" title="Exit device"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></a>
+    </div>
+  </div>
+  <div class="screen-title-row">
+    <button class="back-btn" onclick="window.location.href='expansion-boards-settings.html'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="screen-title-text">R2IO</span>
+  </div>
+
+  <div class="board-meta">
+    <div class="board-meta-line">Desc: 2 Inputs &amp; 2 Relay out</div>
+    <div class="board-meta-line">Serial: R2IOB-0237-7743</div>
+  </div>
+
+  <div class="content">
+    <div class="section-card">
+      <div class="section-title">Basic Preset</div>
+      <div class="section-intro">Activating input IN1 on the REMOTE unit causes RELAY 1 on the CENTRAL unit to activate.</div>
+      <table class="preset-table">
+        <thead>
+          <tr><th>R2IO <b>CENTRAL</b></th><th>R2IO <b>REMOTE</b></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>IN 1</td><td>RELAY 1</td></tr>
+          <tr><td>IN 2</td><td>RELAY 2</td></tr>
+          <tr><td>RELAY 1</td><td>IN 1</td></tr>
+          <tr><td>RELAY 2</td><td>IN 2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <div class="section-title">Relay Failsafe</div>
+      <div class="subsection-heading">Relay 3 (R2IO)</div>
+      <div class="io-port-head" style="margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Power Loss</span>
+        <div class="io-seg" style="width:150px;">
+          <button type="button" class="active" onclick="setBoardRelay(event)">Fail Secure</button>
+          <button type="button" onclick="setBoardRelay(event)">Fail Safe</button>
+        </div>
+      </div>
+      <div class="io-port-head">
+        <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Radio-Link Loss</span>
+        <div class="io-seg" style="width:150px;">
+          <button type="button" class="active" onclick="setBoardRelay(event)">Fail Secure</button>
+          <button type="button" onclick="setBoardRelay(event)">Fail Safe</button>
+        </div>
+      </div>
+      <div class="subsection-divider"></div>
+      <div class="subsection-heading">Relay 4 (R2IO)</div>
+      <div class="io-port-head" style="margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Power Loss</span>
+        <div class="io-seg" style="width:150px;">
+          <button type="button" onclick="setBoardRelay(event)">Fail Secure</button>
+          <button type="button" class="active" onclick="setBoardRelay(event)">Fail Safe</button>
+        </div>
+      </div>
+      <div class="io-port-head">
+        <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Radio-Link Loss</span>
+        <div class="io-seg" style="width:150px;">
+          <button type="button" onclick="setBoardRelay(event)">Fail Secure</button>
+          <button type="button" class="active" onclick="setBoardRelay(event)">Fail Safe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function setBoardRelay(evt){
+  const btn = evt.currentTarget;
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW BlueCon — System Info</title>
+<link rel="stylesheet" href="themes/default.css">
+<style>
+  :root {
+    --color-bg: #F4F5F7; --color-surface: #FFFFFF; --color-border: #E7E9EC;
+    --color-text: #1B2430; --color-text-muted: rgba(27, 36, 48, 0.68); --color-text-faint: rgba(27, 36, 48, 0.65);
+    --color-primary: #1B2430; --color-primary-hover: #0F151D; --color-accent: #3E7BFA;
+    --color-danger: #D34247; --color-success: #2BA23E;
+    --color-danger-bg: #FDECEC; --color-success-bg: #E9F8EC; --color-accent-bg: #EAF1FF;
+    --font-sans: Arial, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    --text-heading: 20px; --text-body: 15px; --text-label: 13px;
+    --radius-card: 20px; --radius-sm: 12px; --radius-pill: 999px;
+    --shadow-card: 0 16px 32px rgba(27, 36, 48, 0.06); --shadow-card-sm: 0 6px 16px rgba(27, 36, 48, 0.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: #DDE1E6; color: var(--color-text); padding-top: 40px; }
+
+  .phone { width: 375px; margin: 0 auto; background: var(--color-bg); border-radius: 36px; box-shadow: 0 30px 60px rgba(10,14,20,0.35), 0 0 0 10px #15181d, 0 0 0 11px #2a2e35; overflow: hidden; height: 760px; display: flex; flex-direction: column; position: relative; }
+  .status-ios { height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; font-weight: 600; color: var(--color-text); flex-shrink: 0; }
+
+  .shell-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 6px; flex-shrink: 0; }
+  .role-badge { background: var(--color-primary); color: #fff; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-pill); }
+  .conn-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #1C7F2C; }
+  .conn-status .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); flex-shrink: 0; }
+  .shell-header-right { display: flex; align-items: center; gap: 10px; }
+  .exit-device-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; color: var(--color-text-muted); text-decoration: none; flex-shrink: 0; }
+  .exit-device-btn:hover { background: rgba(27, 36, 48, 0.08); color: var(--color-text); }
+  .about-row-footnote { font-size: 11px; color: var(--color-text-faint); text-align: right; margin-top: 2px; }
+
+  .screen-title-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px; flex-shrink: 0; }
+  .back-btn { appearance: none; border: none; background: none; color: var(--color-text); cursor: pointer; padding: 2px; display: flex; flex-shrink: 0; }
+  .screen-title-text { font-size: var(--text-heading); font-weight: 600; }
+
+  .content { flex: 1; overflow-y: auto; padding-bottom: 24px; }
+
+  .section-flat { margin: 0 16px 16px; padding: 2px 4px 8px; }
+  .section-flat .info-row { border-top: none; padding: 5px 2px; }
+  .section-heading { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--color-text-faint); margin: 14px 0 4px; }
+  .info-row { display: flex; align-items: baseline; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--color-border); gap: 12px; }
+  .info-row:first-of-type { border-top: none; }
+  .info-label { font-size: var(--text-label); color: var(--color-text-muted); flex-shrink: 0; }
+  .info-value { font-size: var(--text-body); font-weight: 500; color: var(--color-text); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62%; }
+
+  .info-value-indicator { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
+  .info-value-indicator .info-value { max-width: none; }
+  .dot-indicator { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-indicator.good { background: var(--color-success); }
+  .status-word { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); white-space: nowrap; }
+  .status-word.good { color: #1C7F2C; background: var(--color-success-bg); }
+  .rssi-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 11px; }
+  .rssi-bars i { display: block; width: 3px; border-radius: 1px; background: var(--color-border); }
+  .rssi-bars i:nth-child(1) { height: 4px; } .rssi-bars i:nth-child(2) { height: 7px; }
+  .rssi-bars i:nth-child(3) { height: 10px; } .rssi-bars i:nth-child(4) { height: 13px; }
+  .rssi-bars.good i { background: var(--color-success); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status-ios"><span>9:41</span><span>●●●●  5G  🔋</span></div>
+  <div class="shell-header">
+    <span class="role-badge">Central Unit</span>
+    <div class="shell-header-right">
+      <span class="conn-status"><span class="status-dot"></span>Connected</span>
+      <a class="exit-device-btn" href="device-scan.html" title="Exit device"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></a>
+    </div>
+  </div>
+  <div class="screen-title-row">
+    <button class="back-btn" onclick="window.location.href='home.html'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="screen-title-text">System Info</span>
+  </div>
+
+  <div class="content">
+    <div class="section-flat">
+      <div class="section-heading" style="margin-top:0;">Status</div>
+      <div class="info-row"><span class="info-label">Pairing Status</span><span class="info-value">Paired</span></div>
+      <div class="info-row"><span class="info-label">Uptime</span><span class="info-value">4d 6h 12m</span></div>
+      <div class="info-row">
+        <span class="info-label">Signal Strength</span>
+        <span class="info-value-indicator">
+          <span class="rssi-bars good"><i></i><i></i><i></i><i></i></span>
+          <span class="info-value">78%</span>
+          <span class="status-word good">Good</span>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Power</span>
+        <span class="info-value-indicator">
+          <span class="dot-indicator good"></span>
+          <span class="info-value">24.1 VDC</span>
+          <span class="status-word good">Mains</span>
+        </span>
+      </div>
+      <div class="section-heading">Device Identity</div>
+      <div class="info-row"><span class="info-label">Model</span><span class="info-value">WW-4000</span></div>
+      <div class="info-row"><span class="info-label">Serial Number</span><span class="info-value">7C3A1F092D81EFAB33</span></div>
+      <div class="info-row"><span class="info-label">Firmware Version</span><span class="info-value">2.4.1</span></div>
+      <div class="info-row"><span class="info-label">Hardware Version</span><span class="info-value">Rev C</span></div>
+      <div class="info-row"><span class="info-label">API Version</span><span class="info-value">1.0.0</span></div>
+      <div class="section-heading">Expansion Boards</div>
+      <div class="info-row"><span class="info-label">W2 Board</span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="info-value">WB2-0021-7743</span><span class="status-word good">Online</span></span></div>
+      <div class="info-row"><span class="info-label">R2IO Board</span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="info-value">RIO-0048-2210</span><span class="status-word good">Online</span></span></div>
+      <div class="section-heading">Network</div>
+      <div class="info-row"><span class="info-label">Connection</span><span class="info-value">Ethernet</span></div>
+      <div class="info-row"><span class="info-label">IP Address</span><span class="info-value">192.168.1.201</span></div>
+    </div>
+    <div class="section-flat" style="padding-top:0;">
+      <div class="section-heading">About</div>
+      <div class="info-row"><span class="info-label">App Version</span><span class="info-value">1.0.0 (build 1)</span></div>
+      <div class="about-row-footnote">© 2026 Lumiring</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

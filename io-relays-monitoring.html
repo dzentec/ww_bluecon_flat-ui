@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW BlueCon — I/O &amp; Relays</title>
+<link rel="stylesheet" href="themes/default.css">
+<style>
+  :root {
+    --color-bg: #F4F5F7; --color-surface: #FFFFFF; --color-border: #E7E9EC;
+    --color-text: #1B2430; --color-text-muted: rgba(27, 36, 48, 0.68); --color-text-faint: rgba(27, 36, 48, 0.65);
+    --color-primary: #1B2430; --color-primary-hover: #0F151D; --color-accent: #3E7BFA;
+    --color-danger: #D34247; --color-success: #2BA23E;
+    --color-danger-bg: #FDECEC; --color-success-bg: #E9F8EC; --color-accent-bg: #EAF1FF;
+    --font-sans: Arial, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    --text-heading: 20px; --text-body: 15px; --text-label: 13px;
+    --radius-card: 20px; --radius-sm: 12px; --radius-pill: 999px;
+    --shadow-card: 0 16px 32px rgba(27, 36, 48, 0.06); --shadow-card-sm: 0 6px 16px rgba(27, 36, 48, 0.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: #DDE1E6; color: var(--color-text); padding: 40px 16px 80px; }
+  button { font-family: var(--font-sans); }
+
+  .phone { width: 375px; margin: 0 auto; background: var(--color-bg); border-radius: 36px; box-shadow: 0 30px 60px rgba(10,14,20,0.35), 0 0 0 10px #15181d, 0 0 0 11px #2a2e35; overflow: hidden; height: 760px; display: flex; flex-direction: column; position: relative; }
+  .status-ios { height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; font-weight: 600; color: var(--color-text); flex-shrink: 0; }
+
+  .shell-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 6px; flex-shrink: 0; }
+  .role-badge { background: var(--color-primary); color: #fff; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-pill); }
+  .conn-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #1C7F2C; }
+  .conn-status .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); flex-shrink: 0; }
+  .shell-header-right { display: flex; align-items: center; gap: 10px; }
+  .exit-device-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; color: var(--color-text-muted); text-decoration: none; flex-shrink: 0; }
+  .exit-device-btn:hover { background: rgba(27, 36, 48, 0.08); color: var(--color-text); }
+
+  .screen-title-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px; flex-shrink: 0; }
+  .back-btn { appearance: none; border: none; background: none; color: var(--color-text); cursor: pointer; padding: 2px; display: flex; flex-shrink: 0; }
+  .screen-title-text { font-size: var(--text-heading); font-weight: 600; }
+
+  .content { flex: 1; overflow-y: auto; padding-bottom: 104px; }
+
+  .section-card { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card-sm); margin: 0 16px 16px; padding: 18px; }
+  .section-heading { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--color-text-faint); margin-bottom: 14px; }
+
+  .info-row { display: flex; align-items: baseline; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--color-border); gap: 12px; }
+  .info-row:first-of-type { border-top: none; }
+  .info-label { font-size: var(--text-label); color: var(--color-text-muted); flex-shrink: 0; }
+  .info-value-indicator { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
+  .io-mode-tag { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--color-text-faint); background: #EEF0F2; padding: 2px 7px; border-radius: var(--radius-pill); margin-left: 7px; }
+  .dot-indicator { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-indicator.good { background: var(--color-success); }
+  .dot-indicator.bad { background: var(--color-danger); }
+  .dot-indicator.neutral { background: var(--color-text-faint); }
+  .status-word { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); white-space: nowrap; }
+  .status-word.good { color: #1C7F2C; background: var(--color-success-bg); }
+  .status-word.bad { color: #C23237; background: var(--color-danger-bg); }
+  .status-word.neutral { color: var(--color-text-faint); background: #EEF0F2; }
+
+  /* ---------- Floating sibling-screens bar: flip through this tab's icons without going back to Home ---------- */
+  .ww-tabbar-wrap { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 0 14px; z-index: 20; pointer-events: none; }
+  .ww-tabbar { margin: 0 14px; background: rgba(255,255,255,0.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 20px; box-shadow: 0 12px 28px rgba(27,36,48,0.16); display: flex; justify-content: space-between; gap: 2px; padding: 8px 10px; overflow-x: auto; scrollbar-width: none; pointer-events: auto; }
+  .ww-tabbar::-webkit-scrollbar { display: none; }
+  .ww-tabbar-item { flex: 0 0 52px; width: 52px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; color: var(--color-text-muted); padding: 4px 1px; border-radius: 12px; }
+  .ww-tabbar-icon { width: 30px; height: 30px; border-radius: 50%; border: 1.3px solid var(--color-accent); color: var(--color-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ww-tabbar-label { font-size: 9px; font-weight: 500; text-align: center; line-height: 1.15; width: 100%; }
+  .ww-tabbar-item.active .ww-tabbar-icon { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+  .ww-tabbar-item.active .ww-tabbar-label { color: var(--color-text); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status-ios"><span>9:41</span><span>●●●●  5G  🔋</span></div>
+  <div class="shell-header">
+    <span class="role-badge">Central Unit</span>
+    <div class="shell-header-right">
+      <span class="conn-status"><span class="status-dot"></span>Connected</span>
+      <a class="exit-device-btn" href="device-scan.html" title="Exit device"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></a>
+    </div>
+  </div>
+  <div class="screen-title-row">
+    <button class="back-btn" onclick="window.location.href='home.html'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="screen-title-text">I/O &amp; Relays</span>
+  </div>
+
+  <div class="content">
+    <div class="section-card">
+      <div class="section-heading">I/O &amp; Relays</div>
+      <div class="info-row"><span class="info-label">I/O 1<span class="io-mode-tag">Input</span></span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="status-word good">Normal</span></span></div>
+      <div class="info-row"><span class="info-label">I/O 2<span class="io-mode-tag">Input</span></span><span class="info-value-indicator"><span class="dot-indicator bad"></span><span class="status-word bad">Alarm</span></span></div>
+      <div class="info-row"><span class="info-label">I/O 3<span class="io-mode-tag">Output</span></span><span class="info-value-indicator"><span class="dot-indicator neutral"></span><span class="status-word neutral">Inactive</span></span></div>
+      <div class="info-row"><span class="info-label">I/O 4<span class="io-mode-tag">Output</span></span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="status-word good">Active</span></span></div>
+      <div class="info-row"><span class="info-label">Relay R1</span><span class="info-value-indicator"><span class="dot-indicator neutral"></span><span class="status-word neutral">Off</span></span></div>
+      <div class="info-row"><span class="info-label">Relay R2</span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="status-word good">On</span></span></div>
+      <div class="info-row"><span class="info-label">Input IN1</span><span class="info-value-indicator"><span class="dot-indicator neutral"></span><span class="status-word neutral">Idle</span></span></div>
+      <div class="info-row"><span class="info-label">Input IN2</span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="status-word good">Active</span></span></div>
+    </div>
+    <div class="section-card">
+      <div class="section-heading">Tamper</div>
+      <div class="info-row"><span class="info-label">Tamper 0<span class="io-mode-tag">DIN Rail</span></span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="status-word good">Closed</span></span></div>
+      <div class="info-row"><span class="info-label">Tamper 1<span class="io-mode-tag">External</span></span><span class="info-value-indicator"><span class="dot-indicator good"></span><span class="status-word good">Closed</span></span></div>
+    </div>
+  </div>
+
+  <div class="ww-tabbar-wrap">
+    <div class="ww-tabbar" id="ww-tabbar">
+      <a class="ww-tabbar-item" href="radio-signal-log.html"><span class="ww-tabbar-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h3.5l1.8-6 3 11 2.2-8.5 1.5 3.5H21"/></svg></span><span class="ww-tabbar-label">Radio<br>Signal log</span></a>
+      <a class="ww-tabbar-item" href="osdp-wiegand.html"><span class="ww-tabbar-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></span><span class="ww-tabbar-label">OSDP &amp;<br>Wiegand</span></a>
+      <span class="ww-tabbar-item active"><span class="ww-tabbar-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="2.6"/></svg></span><span class="ww-tabbar-label">I/O &amp;<br>Relays</span></span>
+      <a class="ww-tabbar-item" href="expansion-boards-monitoring.html"><span class="ww-tabbar-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 6V3M12 6V3M17 6V3"/></svg></span><span class="ww-tabbar-label">Expansion<br>Boards</span></a>
+      <a class="ww-tabbar-item" href="power-faults-log.html"><span class="ww-tabbar-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></span><span class="ww-tabbar-label">Power<br>Faults log</span></a>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelector('#ww-tabbar .active')?.scrollIntoView({inline:'center', block:'nearest'});
+</script>
+</body>
+</html>

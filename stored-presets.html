@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW BlueCon — Stored Presets</title>
+<link rel="stylesheet" href="themes/default.css">
+<style>
+  :root {
+    --color-bg: #F4F5F7; --color-surface: #FFFFFF; --color-border: #E7E9EC;
+    --color-text: #1B2430; --color-text-muted: rgba(27, 36, 48, 0.68); --color-text-faint: rgba(27, 36, 48, 0.65);
+    --color-primary: #1B2430; --color-primary-hover: #0F151D; --color-accent: #3E7BFA;
+    --color-danger: #D34247; --color-success: #2BA23E;
+    --color-danger-bg: #FDECEC; --color-success-bg: #E9F8EC; --color-accent-bg: #EAF1FF;
+    --font-sans: Arial, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    --text-heading: 20px; --text-body: 15px; --text-label: 13px;
+    --radius-card: 20px; --radius-sm: 12px; --radius-pill: 999px;
+    --shadow-card: 0 16px 32px rgba(27, 36, 48, 0.06); --shadow-card-sm: 0 6px 16px rgba(27, 36, 48, 0.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: #DDE1E6; color: var(--color-text); padding: 40px 16px 80px; }
+  button, input { font-family: var(--font-sans); }
+
+  .phone { width: 375px; margin: 0 auto; background: var(--color-bg); border-radius: 36px; box-shadow: 0 30px 60px rgba(10,14,20,0.35), 0 0 0 10px #15181d, 0 0 0 11px #2a2e35; overflow: hidden; height: 760px; display: flex; flex-direction: column; position: relative; }
+  .status-ios { height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; font-weight: 600; color: var(--color-text); flex-shrink: 0; }
+
+  .shell-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 6px; flex-shrink: 0; }
+  .role-badge { background: var(--color-primary); color: #fff; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-pill); }
+  .conn-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #1C7F2C; }
+  .conn-status .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); flex-shrink: 0; }
+  .shell-header-right { display: flex; align-items: center; gap: 10px; }
+  .exit-device-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; color: var(--color-text-muted); text-decoration: none; flex-shrink: 0; }
+  .exit-device-btn:hover { background: rgba(27, 36, 48, 0.08); color: var(--color-text); }
+
+  .screen-title-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px; flex-shrink: 0; }
+  .back-btn { appearance: none; border: none; background: none; color: var(--color-text); cursor: pointer; padding: 2px; display: flex; flex-shrink: 0; }
+  .screen-title-text { font-size: var(--text-heading); font-weight: 600; }
+
+  .content { flex: 1; overflow-y: auto; padding-bottom: 24px; }
+
+  .preset-row { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card-sm); margin: 0 16px 10px; padding: 14px 16px; cursor: pointer; border: 1.5px solid transparent; transition: border-color 0.15s ease; }
+  .preset-row.expanded { border-color: var(--color-accent); background: var(--color-accent-bg); }
+  .preset-name { font-size: 15px; font-weight: 700; color: var(--color-text); }
+  .preset-meta { font-size: 12.5px; color: var(--color-text-muted); margin-top: 4px; }
+  .preset-meta strong { color: var(--color-text); font-weight: 600; }
+  .preset-actions { display: none; gap: 10px; margin-top: 12px; }
+  .preset-row.expanded .preset-actions { display: flex; }
+  .btn-preset-delete { flex: 1; appearance: none; border: none; background: var(--color-danger); color: #fff; font-size: 14px; font-weight: 700; padding: 11px; border-radius: var(--radius-sm); cursor: pointer; }
+  .btn-preset-apply { flex: 1; appearance: none; border: none; background: var(--color-accent); color: #fff; font-size: 14px; font-weight: 700; padding: 11px; border-radius: var(--radius-sm); cursor: pointer; }
+
+  .preset-empty { text-align: center; padding: 24px 16px; color: var(--color-text-faint); font-size: 13px; }
+
+  .section-card { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card-sm); margin: 16px 16px 16px; padding: 18px; }
+  .section-heading { font-size: 15px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; }
+  .field-helper { font-size: 12.5px; color: var(--color-text-faint); font-style: italic; line-height: 1.5; margin-bottom: 14px; }
+  .field-input { width: 100%; padding: 11px 13px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); font-size: 14px; color: var(--color-text); background: var(--color-surface); margin-bottom: 10px; }
+  .field-input:focus { outline: none; border-color: var(--color-accent); }
+
+  .btn-outline-full { appearance: none; width: 100%; background: transparent; color: var(--color-primary); border: 1.5px dashed var(--color-border); font-size: 14px; font-weight: 600; padding: 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-outline-full:hover { border-color: var(--color-accent); color: var(--color-accent); border-style: solid; }
+  .btn-ghost-full { appearance: none; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: transparent; color: var(--color-text-muted); font-size: 14px; font-weight: 500; padding: 10px; cursor: pointer; flex: 1; }
+  .btn-primary-full { appearance: none; border: none; width: 100%; background: var(--color-primary); color: #fff; font-size: 15px; font-weight: 600; padding: 12px; border-radius: var(--radius-sm); cursor: pointer; flex: 1; }
+
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 18px; background: var(--color-primary); color: #fff; padding: 12px 16px; border-radius: var(--radius-sm); font-size: var(--text-label); font-weight: 500; transform: translateY(40px); opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 50; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+  .toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status-ios"><span>9:41</span><span>●●●●  5G  🔋</span></div>
+  <div class="shell-header">
+    <span class="role-badge">Central Unit</span>
+    <div class="shell-header-right">
+      <span class="conn-status"><span class="status-dot"></span>Connected</span>
+      <a class="exit-device-btn" href="device-scan.html" title="Exit device"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></a>
+    </div>
+  </div>
+  <div class="screen-title-row">
+    <button class="back-btn" onclick="window.location.href='home.html'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="screen-title-text">Stored presets</span>
+  </div>
+
+  <div class="content">
+    <div id="preset-list"></div>
+    <div id="preset-empty" class="preset-empty" style="display:none;">No presets saved yet.</div>
+
+    <div class="section-card">
+      <div class="section-heading">Store Preset</div>
+      <div class="field-helper">Save this unit's Data Port, I/O Ports, and Network settings as a named preset — reuse it on any new device instead of entering every field by hand. A preset covers both roles: apply it on a Remote unit and its half is auto-generated from this Central config, and vice versa.</div>
+      <div id="preset-add-row">
+        <button class="btn-outline-full" onclick="showPresetNameField()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12-4-4m4 4 4-4M5 21h14"/></svg>
+          Store Preset
+        </button>
+      </div>
+      <div id="preset-name-row" style="display:none;">
+        <input class="field-input" id="preset-name-input" placeholder="Profile name (e.g. Downtown Branch)">
+        <div style="display:flex;gap:10px;">
+          <button class="btn-ghost-full" onclick="cancelPresetName()">Cancel</button>
+          <button class="btn-primary-full" onclick="savePreset()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</div>
+
+<script>
+let presets = [
+  { name: 'Downtown Branch', date: '25/11/2026 11:54', config: 'Central+W2+R2IO' },
+  { name: 'Warehouse Entrance', date: '22/11/2026 09:10', config: 'Central+R2IO' },
+  { name: 'Retail Plaza A', date: '18/11/2026 15:37', config: 'Central+W2' },
+  { name: 'Parking Garage B', date: '14/11/2026 08:02', config: 'Central+W2+R2IO' },
+];
+let expandedIndex = null;
+
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+
+function renderPresets(){
+  const list = document.getElementById('preset-list');
+  const empty = document.getElementById('preset-empty');
+  if(!presets.length){
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = presets.map((p,i) => `
+    <div class="preset-row${i===expandedIndex ? ' expanded' : ''}" onclick="toggleExpand(${i})">
+      <div class="preset-name">${p.name}</div>
+      <div class="preset-meta">Date: <strong>${p.date}</strong></div>
+      <div class="preset-meta">Config: <strong>${p.config}</strong></div>
+      <div class="preset-actions">
+        <button class="btn-preset-delete" onclick="event.stopPropagation(); deletePreset(${i})">Delete</button>
+        <button class="btn-preset-apply" onclick="event.stopPropagation(); applyPreset(${i})">Apply Preset</button>
+      </div>
+    </div>
+  `).join('');
+}
+function toggleExpand(i){
+  expandedIndex = expandedIndex === i ? null : i;
+  renderPresets();
+}
+function deletePreset(i){
+  const name = presets[i].name;
+  presets.splice(i,1);
+  expandedIndex = null;
+  renderPresets();
+  toast('"' + name + '" deleted');
+}
+function applyPreset(i){
+  toast('Applying "' + presets[i].name + '" — the other role\'s config is auto-generated from this preset.');
+}
+
+function showPresetNameField(){
+  document.getElementById('preset-add-row').style.display = 'none';
+  document.getElementById('preset-name-row').style.display = 'block';
+  document.getElementById('preset-name-input').focus();
+}
+function cancelPresetName(){
+  document.getElementById('preset-name-input').value = '';
+  document.getElementById('preset-name-row').style.display = 'none';
+  document.getElementById('preset-add-row').style.display = 'block';
+}
+function savePreset(){
+  const input = document.getElementById('preset-name-input');
+  const name = input.value.trim();
+  if(!name) return;
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const date = pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  presets.unshift({ name, date, config: 'Central+W2+R2IO' });
+  renderPresets();
+  cancelPresetName();
+  toast('Preset saved');
+}
+
+renderPresets();
+</script>
+</body>
+</html>

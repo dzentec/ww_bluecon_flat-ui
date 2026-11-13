@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW BlueCon — W2 Settings</title>
+<link rel="stylesheet" href="themes/default.css">
+<style>
+  :root {
+    --color-bg: #F4F5F7; --color-surface: #FFFFFF; --color-border: #E7E9EC;
+    --color-text: #1B2430; --color-text-muted: rgba(27, 36, 48, 0.68); --color-text-faint: rgba(27, 36, 48, 0.65);
+    --color-primary: #1B2430; --color-primary-hover: #0F151D; --color-accent: #3E7BFA;
+    --color-danger: #D34247; --color-success: #2BA23E;
+    --color-danger-bg: #FDECEC; --color-success-bg: #E9F8EC; --color-accent-bg: #EAF1FF;
+    --font-sans: Arial, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    --text-heading: 20px; --text-body: 15px; --text-label: 13px;
+    --radius-card: 20px; --radius-sm: 12px; --radius-pill: 999px;
+    --shadow-card: 0 16px 32px rgba(27, 36, 48, 0.06); --shadow-card-sm: 0 6px 16px rgba(27, 36, 48, 0.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: #DDE1E6; color: var(--color-text); padding: 40px 16px 80px; }
+  button { font-family: var(--font-sans); }
+
+  .phone { width: 375px; margin: 0 auto; background: var(--color-bg); border-radius: 36px; box-shadow: 0 30px 60px rgba(10,14,20,0.35), 0 0 0 10px #15181d, 0 0 0 11px #2a2e35; overflow: hidden; height: 760px; display: flex; flex-direction: column; position: relative; }
+  .status-ios { height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; font-weight: 600; color: var(--color-text); flex-shrink: 0; }
+
+  .shell-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 6px; flex-shrink: 0; }
+  .role-badge { background: var(--color-primary); color: #fff; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-pill); }
+  .conn-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #1C7F2C; }
+  .conn-status .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-success); flex-shrink: 0; }
+  .shell-header-right { display: flex; align-items: center; gap: 10px; }
+  .exit-device-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; color: var(--color-text-muted); text-decoration: none; flex-shrink: 0; }
+  .exit-device-btn:hover { background: rgba(27, 36, 48, 0.08); color: var(--color-text); }
+
+  .screen-title-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px; flex-shrink: 0; }
+  .back-btn { appearance: none; border: none; background: none; color: var(--color-text); cursor: pointer; padding: 2px; display: flex; flex-shrink: 0; }
+  .screen-title-text { font-size: var(--text-heading); font-weight: 600; }
+
+  .board-meta { margin: 0 24px 16px; }
+  .board-meta-line { font-size: 13.5px; color: var(--color-text-muted); line-height: 1.5; }
+
+  .content { flex: 1; overflow-y: auto; padding-bottom: 24px; }
+
+  .section-card { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card-sm); margin: 0 24px 16px; padding: 18px; }
+  .section-title { font-size: 17px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; }
+  .section-intro { font-size: 12.5px; color: var(--color-text-faint); line-height: 1.5; margin-bottom: 14px; }
+
+  .io-port-row { padding: 11px 0; border-top: 1px solid var(--color-border); }
+  .io-port-row:first-of-type { border-top: none; }
+  .io-port-head { display: flex; align-items: center; justify-content: space-between; }
+  .io-port-name { font-size: 14px; font-weight: 600; color: var(--color-text); }
+  .io-port-locked-tag { font-size: 11px; font-weight: 600; color: var(--color-text-muted); background: #EEF0F2; padding: 6px 11px; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status-ios"><span>9:41</span><span>●●●●  5G  🔋</span></div>
+  <div class="shell-header">
+    <span class="role-badge">Central Unit</span>
+    <div class="shell-header-right">
+      <span class="conn-status"><span class="status-dot"></span>Connected</span>
+      <a class="exit-device-btn" href="device-scan.html" title="Exit device"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></a>
+    </div>
+  </div>
+  <div class="screen-title-row">
+    <button class="back-btn" onclick="window.location.href='expansion-boards-settings.html'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="screen-title-text">W2</span>
+  </div>
+
+  <div class="board-meta">
+    <div class="board-meta-line">Desc: 2 Wiegand ports</div>
+    <div class="board-meta-line">Serial: W2B-0021-7743</div>
+  </div>
+
+  <div class="content">
+    <div class="section-card">
+      <div class="section-title">Auto-Preconfigured</div>
+      <div class="section-intro">W2 adds 2 Wiegand reader ports over the expansion bus — plug and play, no pairing step. There's nothing to configure here; it claims I/O 1–4 below for its readers' REX/DPS signals automatically.</div>
+      <div class="io-port-row">
+        <div class="io-port-head"><span class="io-port-name">I/O 1</span><span class="io-port-locked-tag">REX 1 · Output</span></div>
+      </div>
+      <div class="io-port-row">
+        <div class="io-port-head"><span class="io-port-name">I/O 2</span><span class="io-port-locked-tag">DPS 1 · Output</span></div>
+      </div>
+      <div class="io-port-row">
+        <div class="io-port-head"><span class="io-port-name">I/O 3</span><span class="io-port-locked-tag">REX 2 · Output</span></div>
+      </div>
+      <div class="io-port-row">
+        <div class="io-port-head"><span class="io-port-name">I/O 4</span><span class="io-port-locked-tag">DPS 2 · Output</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
