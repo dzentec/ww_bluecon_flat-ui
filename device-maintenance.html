@@ -57,6 +57,18 @@
   .field-group:last-child { margin-bottom: 0; }
   .field-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 6px; display: block; font-weight: 500; }
   .field-input, .field-select-full { width: 100%; padding: 11px 13px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); font-size: 14px; color: var(--color-text); background: var(--color-surface); transition: border-color 0.15s ease; }
+  .ww-select { position: relative; }
+  .ww-select-native { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; overflow: hidden; }
+  .ww-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; text-align: left; }
+  .ww-select-trigger svg { flex-shrink: 0; color: var(--color-text-faint); transition: transform 0.15s ease; }
+  .ww-select.open .ww-select-trigger svg { transform: rotate(180deg); }
+  .ww-select.disabled .ww-select-trigger { opacity: 0.5; cursor: not-allowed; }
+  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 240px; overflow-y: auto; z-index: 30; display: none; }
+  .ww-select.open .ww-select-panel { display: block; }
+  .ww-select-option { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text); cursor: pointer; }
+  .ww-select-option:hover { background: var(--color-accent-bg); }
+  .ww-select-option.selected { background: var(--color-accent); color: #fff; font-weight: 600; }
+  .ww-select-option.disabled { color: var(--color-text-faint); cursor: not-allowed; }
   .field-input:focus, .field-select-full:focus { outline: none; border-color: var(--color-accent); }
   .field-input.invalid { border-color: var(--color-danger); }
   .field-helper { font-size: 11px; color: var(--color-text-faint); font-style: italic; margin-top: 5px; line-height: 1.4; }
@@ -697,6 +709,72 @@ function trySaveSec(){
   const btn = document.getElementById('tab-' + location.hash.slice(1) + '-btn');
   if(btn) btn.click();
 })();
+
+function enhanceSelects(){
+  document.querySelectorAll('select.field-select-full:not(.ww-select-native)').forEach(function(sel){
+    sel.classList.remove('field-select-full');
+    sel.classList.add('ww-select-native');
+    const wrap = document.createElement('div');
+    wrap.className = 'ww-select';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'field-select-full ww-select-trigger';
+    trigger.innerHTML = '<span class="ww-select-value"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+    wrap.appendChild(trigger);
+
+    const panel = document.createElement('div');
+    panel.className = 'ww-select-panel';
+    wrap.appendChild(panel);
+
+    function renderOptions(){
+      panel.innerHTML = '';
+      Array.from(sel.options).forEach(function(opt){
+        const row = document.createElement('div');
+        row.className = 'ww-select-option' + (opt.disabled ? ' disabled' : '') + (opt.selected ? ' selected' : '');
+        row.textContent = opt.textContent;
+        if(!opt.disabled){
+          row.onclick = function(){
+            sel.value = opt.value;
+            sel.dispatchEvent(new Event('change', {bubbles:true}));
+            closePanel();
+          };
+        }
+        panel.appendChild(row);
+      });
+    }
+    function syncTrigger(){
+      const opt = sel.options[sel.selectedIndex];
+      trigger.querySelector('.ww-select-value').textContent = opt ? opt.textContent : '';
+      wrap.classList.toggle('disabled', sel.disabled);
+      renderOptions();
+    }
+    function openPanel(){
+      if(sel.disabled) return;
+      document.querySelectorAll('.ww-select.open').forEach(function(w){ if(w!==wrap) w.classList.remove('open'); });
+      wrap.classList.add('open');
+    }
+    function closePanel(){ wrap.classList.remove('open'); }
+
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      wrap.classList.contains('open') ? closePanel() : openPanel();
+    });
+    sel.addEventListener('change', syncTrigger);
+    new MutationObserver(syncTrigger).observe(sel, {attributes:true, attributeFilter:['disabled']});
+
+    syncTrigger();
+  });
+}
+document.addEventListener('click', function(e){
+  document.querySelectorAll('.ww-select.open').forEach(function(w){ if(!w.contains(e.target)) w.classList.remove('open'); });
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') document.querySelectorAll('.ww-select.open').forEach(function(w){ w.classList.remove('open'); });
+});
+enhanceSelects();
 </script>
 </body>
 </html>
