@@ -144,7 +144,29 @@
   .field-group { margin-bottom: 14px; }
   .field-group:last-child { margin-bottom: 0; }
   .field-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 6px; display: block; font-weight: 500; }
+  .safety-callout { display: flex; gap: 10px; background: #FBEFDD; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; align-items: flex-start; }
+  .safety-callout svg { color: #9A5A12; flex-shrink: 0; margin-top: 1px; }
+  .safety-callout-text { font-size: 12.5px; color: #6B4712; line-height: 1.5; }
+  .safety-callout.danger-tint { background: #FDECEC; }
+  .safety-callout.danger-tint svg { color: #A62328; }
+  .safety-callout.danger-tint .safety-callout-text { color: #8A2227; }
   .field-input, .field-select-full { width: 100%; padding: 11px 13px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); font-size: 14px; color: var(--color-text); background: var(--color-surface); transition: border-color 0.15s ease; }
+  .ww-select { position: relative; }
+  .ww-select-native { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; overflow: hidden; }
+  .ww-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; text-align: left; }
+  .ww-select-trigger svg { flex-shrink: 0; color: var(--color-text-faint); transition: transform 0.15s ease; }
+  .ww-select.open .ww-select-trigger svg { transform: rotate(180deg); }
+  .ww-select.disabled .ww-select-trigger { opacity: 0.5; cursor: not-allowed; }
+  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 240px; overflow-y: auto; z-index: 30; display: none; }
+  .ww-select.open .ww-select-panel { display: block; }
+  .ww-select-option { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text); cursor: pointer; }
+  .ww-select-option:hover { background: var(--color-accent-bg); }
+  .ww-select-option.selected { background: var(--color-accent); color: #fff; font-weight: 600; }
+  .ww-select-option.disabled { color: var(--color-text-faint); cursor: not-allowed; }
+  .btn-outline { appearance: none; background: var(--color-surface); color: var(--color-text); border: 1.5px solid var(--color-border); font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+  .btn-outline:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .save-row-split { display: flex; gap: 10px; margin-top: 16px; }
+  .save-row-split .btn-outline, .save-row-split .btn-save { flex: 1; justify-content: center; }
   .field-input:focus, .field-select-full:focus { outline: none; border-color: var(--color-accent); }
   .field-input:disabled { color: var(--color-text-faint); background: #F4F5F7; border-color: var(--color-border); cursor: not-allowed; }
   .field-input.invalid { border-color: var(--color-danger); }
@@ -298,6 +320,12 @@
             <span class="safety-callout-text">This is the login for this physical device. If you forget the password, you'll need a factory reset to get back in.</span>
           </div>
           <div class="field-group">
+            <label class="field-label">Choose Credentials</label>
+            <select class="field-select-full" id="a-cred-select" onchange="chooseCredential('a')">
+              <option value="">— Custom —</option>
+            </select>
+          </div>
+          <div class="field-group">
             <label class="field-label">Login</label>
             <input class="field-input" id="a-sec-login" value="installer" oninput="markMandatorySecDirty('a')">
           </div>
@@ -322,7 +350,8 @@
             </div>
             <div class="field-error" id="a-sec-confirmpass-error">Passwords don't match</div>
           </div>
-          <div class="save-row" style="display:flex;justify-content:flex-end;margin-top:16px;">
+          <div class="save-row-split">
+            <button class="btn-outline" type="button" onclick="storeCredentials('a')">Store Credentials</button>
             <button class="btn-save" id="a-sec-save-btn" disabled onclick="trySaveMandatorySec('a')">
               <span class="spinner"></span><span>Save &amp; Continue</span>
             </button>
@@ -487,6 +516,12 @@
             <span class="safety-callout-text">This is the login for this physical device. If you forget the password, you'll need a factory reset to get back in.</span>
           </div>
           <div class="field-group">
+            <label class="field-label">Choose Credentials</label>
+            <select class="field-select-full" id="b-cred-select" onchange="chooseCredential('b')">
+              <option value="">— Custom —</option>
+            </select>
+          </div>
+          <div class="field-group">
             <label class="field-label">Login</label>
             <input class="field-input" id="b-sec-login" value="installer" oninput="markMandatorySecDirty('b')">
           </div>
@@ -511,7 +546,8 @@
             </div>
             <div class="field-error" id="b-sec-confirmpass-error">Passwords don't match</div>
           </div>
-          <div class="save-row" style="display:flex;justify-content:flex-end;margin-top:16px;">
+          <div class="save-row-split">
+            <button class="btn-outline" type="button" onclick="storeCredentials('b')">Store Credentials</button>
             <button class="btn-save" id="b-sec-save-btn" disabled onclick="trySaveMandatorySec('b')">
               <span class="spinner"></span><span>Save &amp; Continue</span>
             </button>
@@ -860,6 +896,137 @@ function skipStagedConfig(v){
 function finishSetup(v){
   showToast(v, 'Would route directly to System Info (out of scope for this sketch).');
 }
+
+/* ---------- Stored credentials: reuse a login/password pair across devices ---------- */
+let savedCredentials = [
+  { login: 'installer', password: 'installer' },
+];
+const MAX_SAVED_CREDENTIALS = 8;
+
+function credentialsValid(v){
+  const login = document.getElementById(v+'-sec-login').value.trim();
+  const newpass = document.getElementById(v+'-sec-newpass').value;
+  const confirmpass = document.getElementById(v+'-sec-confirmpass').value;
+  return login.length > 0 && newpass.length >= 8 && confirmpass === newpass;
+}
+
+function renderCredentialSelect(v){
+  const sel = document.getElementById(v+'-cred-select');
+  if(!sel) return;
+  const loginField = document.getElementById(v+'-sec-login');
+  const current = loginField ? loginField.value.trim() : '';
+  sel.innerHTML = '<option value="">— Custom —</option>' +
+    savedCredentials.map(c => '<option value="'+c.login+'">'+c.login+'</option>').join('');
+  sel.value = savedCredentials.some(c => c.login === current) ? current : '';
+  if(sel._wwSync) sel._wwSync();
+}
+
+function chooseCredential(v){
+  const sel = document.getElementById(v+'-cred-select');
+  const found = savedCredentials.find(c => c.login === sel.value);
+  if(found){
+    document.getElementById(v+'-sec-login').value = found.login;
+    document.getElementById(v+'-sec-newpass').value = found.password;
+    document.getElementById(v+'-sec-confirmpass').value = found.password;
+    validateMandatorySec(v);
+  }
+}
+
+function storeCredentials(v){
+  if(!credentialsValid(v)){
+    showToast(v, 'Set a valid login and matching password (8+ chars) first', true);
+    return;
+  }
+  const login = document.getElementById(v+'-sec-login').value.trim();
+  const password = document.getElementById(v+'-sec-newpass').value;
+  const existing = savedCredentials.find(c => c.login === login);
+  if(existing){
+    existing.password = password;
+  } else if(savedCredentials.length >= MAX_SAVED_CREDENTIALS){
+    showToast(v, 'You can store up to 8 credential sets — remove one first', true);
+    return;
+  } else {
+    savedCredentials.push({ login, password });
+  }
+  renderCredentialSelect('a');
+  renderCredentialSelect('b');
+  const sel = document.getElementById(v+'-cred-select');
+  if(sel){ sel.value = login; if(sel._wwSync) sel._wwSync(); }
+  showToast(v, 'Credentials stored as "' + login + '"');
+}
+
+/* ---------- Custom rounded-corner dropdown, replacing the native <select> popup ---------- */
+function enhanceSelects(){
+  document.querySelectorAll('select.field-select-full:not(.ww-select-native)').forEach(function(sel){
+    sel.classList.remove('field-select-full');
+    sel.classList.add('ww-select-native');
+    const wrap = document.createElement('div');
+    wrap.className = 'ww-select';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'field-select-full ww-select-trigger';
+    trigger.innerHTML = '<span class="ww-select-value"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+    wrap.appendChild(trigger);
+
+    const panel = document.createElement('div');
+    panel.className = 'ww-select-panel';
+    wrap.appendChild(panel);
+
+    function renderOptions(){
+      panel.innerHTML = '';
+      Array.from(sel.options).forEach(function(opt){
+        const row = document.createElement('div');
+        row.className = 'ww-select-option' + (opt.disabled ? ' disabled' : '') + (opt.selected ? ' selected' : '');
+        row.textContent = opt.textContent;
+        if(!opt.disabled){
+          row.onclick = function(){
+            sel.value = opt.value;
+            sel.dispatchEvent(new Event('change', {bubbles:true}));
+            closePanel();
+          };
+        }
+        panel.appendChild(row);
+      });
+    }
+    function syncTrigger(){
+      const opt = sel.options[sel.selectedIndex];
+      trigger.querySelector('.ww-select-value').textContent = opt ? opt.textContent : '';
+      wrap.classList.toggle('disabled', sel.disabled);
+      renderOptions();
+    }
+    function openPanel(){
+      if(sel.disabled) return;
+      document.querySelectorAll('.ww-select.open').forEach(function(w){ if(w!==wrap) w.classList.remove('open'); });
+      wrap.classList.add('open');
+    }
+    function closePanel(){ wrap.classList.remove('open'); }
+
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      wrap.classList.contains('open') ? closePanel() : openPanel();
+    });
+    sel.addEventListener('change', syncTrigger);
+    new MutationObserver(syncTrigger).observe(sel, {attributes:true, attributeFilter:['disabled']});
+
+    sel._wwSync = syncTrigger;
+    syncTrigger();
+  });
+}
+document.addEventListener('click', function(e){
+  document.querySelectorAll('.ww-select.open').forEach(function(w){ if(!w.contains(e.target)) w.classList.remove('open'); });
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') document.querySelectorAll('.ww-select.open').forEach(function(w){ w.classList.remove('open'); });
+});
+
+renderCredentialSelect('a');
+chooseCredential('a');
+renderCredentialSelect('b');
+chooseCredential('b');
+enhanceSelects();
 </script>
 </body>
 </html>
