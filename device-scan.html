@@ -109,6 +109,16 @@
   }
   .bug-btn:hover { background: rgba(27,36,48,0.06); color: var(--color-text-muted); }
 
+  .add-device-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 1.5px solid var(--color-text);
+    color: var(--color-text); text-decoration: none;
+    cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+  }
+  .add-device-btn:hover { background: var(--color-accent-bg); border-color: var(--color-accent); color: var(--color-accent); }
+
   /* ---------- Status banner ---------- */
   .status-banner {
     margin: 0 16px 14px; padding: 11px 14px;
@@ -282,9 +292,9 @@
         <div class="appbar-title">WW BlueCon</div>
         <div class="appbar-sub">Scan for devices</div>
       </div>
-      <button class="bug-btn" onclick="toast('a', 'Debug screen — not in release build')" title="Debug">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="6"/><path d="M12 7V5M8.5 8.5 6 6M15.5 8.5 18 6M6 13H3M21 13h-3M6.5 18 4 20M17.5 18 20 20M9 13h6"/></svg>
-      </button>
+      <a class="add-device-btn" href="init-wizard.html" title="Set up a new device">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </a>
     </div>
 
     <div id="a-banner" class="status-banner connecting">
@@ -304,7 +314,7 @@
             </div>
           </div>
           <div class="radar-caption">Scanning nearby</div>
-          <div class="radar-sub">4 devices found</div>
+          <div class="radar-sub">3 devices found</div>
         </div>
 
         <div class="section-label">Nearby devices</div>
@@ -345,21 +355,6 @@
           </div>
         </div>
 
-        <div class="device-card" onclick="connectDevice('a', this, '(unnamed device)')">
-          <div class="device-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></div>
-          <div class="device-info">
-            <div class="device-name">(unnamed device)</div>
-            <div class="device-id">F0:18:98:AA:12:3B</div>
-          </div>
-          <div class="device-trailing rssi-weak">
-            <span class="rssi-value">−88 dBm</span>
-            <span class="rssi-bars"><i></i><i></i><i></i><i></i></span>
-          </div>
-        </div>
-      </div>
-
-      <div style="text-align:center; padding:14px 16px 4px;">
-        <a href="init-wizard.html" style="font-size:13px; color:var(--color-accent); text-decoration:none; font-weight:500;">New device? Set it up →</a>
       </div>
 
       <!-- loading -->
