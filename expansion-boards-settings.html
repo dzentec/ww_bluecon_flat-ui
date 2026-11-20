@@ -59,9 +59,10 @@
   .board-slot-empty .slot-dot { position: absolute; top: 12px; right: 14px; width: 8px; height: 8px; border-radius: 50%; border: 1px solid #C1C5CC; }
 
   .io-port-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .io-seg { display: flex; background: #EAECEF; border-radius: 8px; padding: 2px; width: 150px; }
-  .io-seg button { flex: 1; appearance: none; border: none; background: transparent; color: var(--color-text-muted); font-size: 11.5px; font-weight: 600; padding: 6px 2px; border-radius: 6px; cursor: pointer; }
-  .io-seg button.active { background: #fff; color: var(--color-primary); box-shadow: 0 1px 4px rgba(27,36,48,0.12); }
+  .io-seg { display: flex; background: #EAECEF; border-radius: 15px; padding: 3px; width: 192px; height: 40px; flex-shrink: 0; }
+  .io-seg.locked { opacity: 0.5; pointer-events: none; }
+  .io-seg button { flex: 1; appearance: none; border: none; background: transparent; color: var(--color-text-muted); font-size: 14px; font-weight: 600; padding: 0 2px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
+  .io-seg button.active { background: #fff; color: var(--color-primary); box-shadow: 0 2px 6px rgba(27,36,48,0.1); }
 
   .switch { position: relative; width: 42px; height: 25px; flex-shrink: 0; display: inline-block; }
   .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
@@ -107,18 +108,18 @@
     <div class="section-card">
       <div class="global-failsafe-head">
         <div class="section-title">Global Relay Failsafe</div>
-        <label class="switch"><input type="checkbox" checked onchange="markDirty()"><span class="track"><span class="thumb"></span></span></label>
+        <label class="switch"><input type="checkbox" id="g-enabled" checked onchange="setGlobalEnabled(this.checked)"><span class="track"><span class="thumb"></span></span></label>
       </div>
       <div class="io-port-head" style="margin-bottom:8px;">
         <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Power Loss</span>
-        <div class="io-seg" style="width:150px;">
+        <div class="io-seg" id="g-pl">
           <button type="button" class="active" onclick="setGlobalRelay(event)">Fail Secure</button>
           <button type="button" onclick="setGlobalRelay(event)">Fail Safe</button>
         </div>
       </div>
       <div class="io-port-head" style="margin-bottom:0;">
         <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Radio-Link Loss</span>
-        <div class="io-seg" style="width:150px;">
+        <div class="io-seg" id="g-rl">
           <button type="button" class="active" onclick="setGlobalRelay(event)">Fail Secure</button>
           <button type="button" onclick="setGlobalRelay(event)">Fail Safe</button>
         </div>
@@ -161,12 +162,21 @@ function renderBoards(){
   }
   list.innerHTML = html;
 }
+// Shared with board-r2io.html: while Global Relay Failsafe is on, its modes apply to every relay on the boards.
+function loadGlobal(){ try { return Object.assign({enabled:true, pl:'secure', rl:'secure'}, JSON.parse(localStorage.getItem('wwGlobal')||'{}')); } catch(e) { return {enabled:true, pl:'secure', rl:'secure'}; } }
+function saveGlobal(g){ try { localStorage.setItem('wwGlobal', JSON.stringify(g)); } catch(e) {} }
+function paintSeg(id, mode){ document.querySelectorAll('#'+id+' button').forEach((b,i)=>b.classList.toggle('active', (i===1)===(mode==='safe'))); }
+function setGlobalEnabled(on){ const g=loadGlobal(); g.enabled=on; saveGlobal(g); }
 function setGlobalRelay(evt){
   const btn = evt.currentTarget;
-  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  const seg = btn.parentElement;
+  seg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  const g=loadGlobal(); const mode = btn.textContent.trim()==='Fail Safe' ? 'safe' : 'secure';
+  if(seg.id==='g-pl') g.pl=mode; else g.rl=mode;
+  saveGlobal(g);
 }
-function markDirty(){}
+(function(){ const g=loadGlobal(); document.getElementById('g-enabled').checked=g.enabled; paintSeg('g-pl',g.pl); paintSeg('g-rl',g.rl); })();
 
 renderBoards();
 </script>

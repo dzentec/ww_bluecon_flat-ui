@@ -21,10 +21,6 @@
   body { margin: 0; font-family: var(--font-sans); background: #DDE1E6; color: var(--color-text); padding-top: 52px; }
   button, select, input { font-family: var(--font-sans); }
 
-  #variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: var(--color-primary); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 16px; display: flex; gap: 8px; align-items: center; overflow-x: auto; }
-  .variant-tab { appearance: none; border: 1px solid rgba(255,255,255,0.18); background: transparent; color: rgba(255,255,255,0.72); padding: 7px 14px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.15s ease; }
-  .variant-tab:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
-  .variant-tab.active { background: #fff; color: var(--color-primary); border-color: #fff; }
   .variant { display: none; padding: 40px 16px 80px; }
   .variant.active { display: block; }
 
@@ -157,7 +153,7 @@
   .ww-select-trigger svg { flex-shrink: 0; color: var(--color-text-faint); transition: transform 0.15s ease; }
   .ww-select.open .ww-select-trigger svg { transform: rotate(180deg); }
   .ww-select.disabled .ww-select-trigger { opacity: 0.5; cursor: not-allowed; }
-  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 240px; overflow-y: auto; z-index: 30; display: none; }
+  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 212px; overflow-y: auto; z-index: 30; display: none; }
   .ww-select.open .ww-select-panel { display: block; }
   .ww-select-option { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text); cursor: pointer; }
   .ww-select-option:hover { background: var(--color-accent-bg); }
@@ -200,19 +196,11 @@
   .btn-save .spinner { display: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; animation: spin 0.8s linear infinite; }
   .btn-save.loading .spinner { display: inline-block; }
 
-  .dev-strip { width: 375px; margin: 14px auto 0; padding: 8px 10px; border: 1px dashed rgba(27,36,48,0.28); border-radius: 10px; background: rgba(255,255,255,0.5); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-  .dev-strip span.dev-label { font-size: 10px; color: var(--color-text-faint); margin-right: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
-  .dev-btn { appearance: none; border: 1px solid var(--color-border); background: #fff; border-radius: 999px; padding: 4px 10px; font-size: 11px; color: var(--color-text-muted); cursor: pointer; transition: all 0.15s ease; }
-  .dev-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
-  .dev-btn.current { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
 
   .toast { position: absolute; left: 16px; right: 16px; bottom: 20px; background: var(--color-primary); color: #fff; padding: 12px 16px; border-radius: var(--radius-sm); font-size: var(--text-label); font-weight: 500; transform: translateY(40px); opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 60; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.error { background: var(--color-danger); }
 
-  .caption-row { margin: 2px 16px 46px; max-width: 375px; font-size: 12px; color: #5b6572; }
-  #sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font-family: system-ui; font-size: 12px; background: rgba(0,0,0,0.75); color: #fff; padding: 8px 12px; border-radius: 10px; opacity: 0.45; transition: opacity 0.2s ease; display: flex; gap: 10px; align-items: center; }
-  #sketch-tools:hover { opacity: 1; }
 </style>
 </head>
 <body>
@@ -251,7 +239,7 @@
         <div class="screen-title" style="padding:0;margin-bottom:2px;">Scan QR Code</div>
         <div class="screen-sub" style="padding:0;margin:-2px 0 4px;">Point your camera at the QR code on the device or its box.</div>
         <div class="qr-viewfinder"><div class="qr-corner tl"></div><div class="qr-corner tr"></div><div class="qr-corner bl"></div><div class="qr-corner br"></div><div class="qr-scanline"></div></div>
-        <button class="btn-outline-full" style="max-width:280px;" onclick="simulateQRScan('a')">Simulate Scan (dev)</button>
+        <button class="btn-outline-full" style="max-width:280px;" onclick="simulateQRScan('a')">Scan Code</button>
       </div>
 
       <div class="wiz-screen centered" id="a-screen-qr-search">
@@ -263,7 +251,7 @@
           </div>
         </div>
         <div class="wiz-heading" id="a-qr-search-heading">Searching for SN-88392011…</div>
-        <div class="wiz-sub" id="a-qr-search-sub">Make sure the device is powered on and nearby.</div>
+        <div class="wiz-sub" id="a-qr-search-sub">Looking for the device over Bluetooth. Make sure it is powered on and nearby.</div>
       </div>
 
       <div class="wiz-screen centered" id="a-screen-qr-verify">
@@ -298,17 +286,12 @@
         </div>
         <div class="wiz-heading">Hold your phone close to the device</div>
         <div class="wiz-sub">Within about 15–20 cm of the device's housing — closer than usual, so only the device you're touching responds.</div>
-        <div class="signal-meter weak" id="a-poh-signal"><i></i><i></i><i></i><i></i></div>
         <div class="wiz-sub" id="a-poh-signal-label" style="margin-top:0;">Move closer…</div>
         <div class="found-device-card" id="a-poh-found-card" style="display:none;">
           <span class="found-device-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></span>
           <span class="found-device-info"><span class="found-device-name">WW-RESET-C9A3</span><span class="found-device-sub">Signal −41 dBm — close enough</span></span>
         </div>
         <button class="btn-primary-full" id="a-poh-connect-btn" style="display:none;" onclick="pohConnect('a')">Connect</button>
-      </div>
-
-      <div class="wiz-screen centered" id="a-screen-poh-confirm-placeholder">
-        <div class="wiz-sub">Confirmation runs full-screen for this variant — see the takeover below.</div>
       </div>
 
       <div class="wiz-screen" id="a-screen-mandatory-security">
@@ -358,21 +341,6 @@
           </div>
         </div>
       </div>
-
-      <div class="wiz-screen centered" id="a-screen-apply-config">
-        <div class="screen-title" style="padding:0;margin-bottom:4px;">Apply Preset?</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 14px;">Choose a saved preset to apply instead of setting up Data Port, I/O Ports, and Network by hand. A preset covers both roles — the Remote half is auto-generated from whichever Central config it was saved from, and vice versa.</div>
-        <div id="a-job-profile-picker" style="width:100%;max-width:280px;"></div>
-        <button class="btn-primary-full" id="a-apply-config-btn" onclick="applyStagedConfig('a',event)">Apply Preset</button>
-        <button class="btn-ghost-full" onclick="skipStagedConfig('a')">Set Up Manually Instead</button>
-      </div>
-
-      <div class="wiz-screen centered" id="a-screen-complete">
-        <div class="complete-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
-        <div class="wiz-heading" style="margin-top:18px;">Setup Complete</div>
-        <div class="wiz-sub" id="a-complete-sub">Login and password are set. Your device is ready to use.</div>
-        <button class="btn-primary-full" onclick="window.location.href='home.html'">Continue to Dashboard</button>
-      </div>
     </div>
 
     <div class="confirm-full" id="a-confirm-full">
@@ -390,232 +358,17 @@
         <span class="cue-note-text">The device will beep and blink green while it's waiting for your press.</span>
       </div>
       <div id="a-confirm-actions" style="width:100%;"></div>
-      <button class="btn-outline-full" style="max-width:280px;margin-top:18px;" id="a-confirm-sim-btn" onclick="simulateButtonPress('a')">Simulate Button Press (dev)</button>
+      <button class="btn-outline-full" style="max-width:280px;margin-top:18px;" id="a-confirm-sim-btn" onclick="simulateButtonPress('a')">Confirm Button Press</button>
     </div>
 
     <div id="a-toast" class="toast"></div>
   </div>
 </div>
 
-<div id="variant-b-removed" style="display:none;">
-  <div class="phone" id="phone-b">
-    <div class="status-ios"><span>9:41</span><span>●●●●  5G  🔋</span></div>
-
-    <div class="wiz-header" id="b-header"></div>
-    <div class="content" id="b-content">
-
-      <div class="wiz-screen centered active" id="b-screen-entry">
-        <div class="screen-title" style="padding:0;margin-bottom:4px;">Set Up New Device</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 18px;">Choose how you'd like to add this device.</div>
-        <div style="width:100%;">
-          <div class="choice-card" onclick="chooseQR('b')">
-            <span class="choice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M17 20h3"/></svg></span>
-            <span class="choice-text"><span class="choice-title">Scan QR Code</span><span class="choice-sub">Fastest way — for a factory-new device with its box or label</span></span>
-            <span class="choice-chevron">›</span>
-          </div>
-          <div class="choice-card" onclick="choosePoh('b')">
-            <span class="choice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M5.5 10a7 7 0 0 1 12-3.5L20 9M18.5 14a7 7 0 0 1-12 3.5L4 15"/></svg></span>
-            <span class="choice-text"><span class="choice-title">Reset &amp; Recover</span><span class="choice-sub">Lost the box or QR code? Reset the device and add it with no codes</span></span>
-            <span class="choice-chevron">›</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="wiz-screen centered" id="b-screen-qr-scan">
-        <div class="screen-title" style="padding:0;margin-bottom:2px;">Scan QR Code</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 4px;">Point your camera at the QR code on the device or its box.</div>
-        <div class="qr-viewfinder"><div class="qr-corner tl"></div><div class="qr-corner tr"></div><div class="qr-corner bl"></div><div class="qr-corner br"></div><div class="qr-scanline"></div></div>
-        <button class="btn-outline-full" style="max-width:280px;" onclick="simulateQRScan('b')">Simulate Scan (dev)</button>
-      </div>
-
-      <div class="wiz-screen centered" id="b-screen-qr-search">
-        <div class="radar-stage" style="width:120px;height:120px;" id="b-qr-radar">
-          <div class="radar-ring" style="--ring-start:48px; --ring-end:120px; width:48px; height:48px; animation-delay:0s;"></div>
-          <div class="radar-ring" style="--ring-start:48px; --ring-end:120px; width:48px; height:48px; animation-delay:0.8s;"></div>
-          <div class="radar-core" style="width:48px;height:48px;" id="b-qr-radar-core">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20v-7M8 10a5.7 5.7 0 0 1 8 0M5 7a10 10 0 0 1 14 0M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
-          </div>
-        </div>
-        <div class="wiz-heading" id="b-qr-search-heading">Searching for SN-88392011…</div>
-        <div class="wiz-sub" id="b-qr-search-sub">Make sure the device is powered on and nearby.</div>
-      </div>
-
-      <div class="wiz-screen centered" id="b-screen-qr-verify">
-        <div class="radar-stage" style="width:70px;height:70px;">
-          <div class="radar-core" style="width:70px;height:70px;" id="b-qr-verify-core"><span class="spin-ring" id="b-qr-verify-spinner" style="width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,0.35);border-top-color:#fff;animation:spin 0.8s linear infinite;display:block;"></span></div>
-        </div>
-        <div class="wiz-heading" id="b-qr-verify-heading">Verifying device identity…</div>
-        <div class="wiz-sub" id="b-qr-verify-sub">Checking the device's factory credentials against the QR code you scanned.</div>
-        <div id="b-qr-verify-actions" style="display:none;width:100%;"></div>
-      </div>
-
-      <div class="wiz-screen centered" id="b-screen-poh-instructions">
-        <div class="screen-title" style="padding:0;margin-bottom:2px;">Reset the Device</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 6px;">This erases the device's current pairing and starts fresh.</div>
-        <div style="width:100%;text-align:left;">
-          <div class="instr-row"><span class="instr-num">1</span><span class="instr-text">Unplug the device's power.</span></div>
-          <div class="instr-row"><span class="instr-num">2</span><span class="instr-text">Press and hold any button on the device.</span></div>
-          <div class="instr-row"><span class="instr-num">3</span><span class="instr-text">Reconnect power <strong>while still holding</strong> the button.</span></div>
-          <div class="instr-row"><span class="instr-num">4</span><span class="instr-text">Keep holding for <strong>5 seconds</strong>.</span></div>
-          <div class="instr-row"><span class="instr-num">5</span><span class="instr-text">Release once the LED blinks <strong>blue rapidly</strong> — reset complete.</span></div>
-        </div>
-        <button class="btn-primary-full" onclick="startPohSearch('b')">I've Done This — Scan for Device</button>
-      </div>
-
-      <div class="wiz-screen centered" id="b-screen-poh-search">
-        <div class="radar-stage" style="width:120px;height:120px;" id="b-poh-radar">
-          <div class="radar-ring" style="--ring-start:48px; --ring-end:120px; width:48px; height:48px; animation-delay:0s;"></div>
-          <div class="radar-ring" style="--ring-start:48px; --ring-end:120px; width:48px; height:48px; animation-delay:0.8s;"></div>
-          <div class="radar-core" style="width:48px;height:48px;" id="b-poh-radar-core">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20v-7M8 10a5.7 5.7 0 0 1 8 0M5 7a10 10 0 0 1 14 0M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
-          </div>
-        </div>
-        <div class="wiz-heading">Hold your phone close to the device</div>
-        <div class="wiz-sub">Within about 15–20 cm of the device's housing — closer than usual, so only the device you're touching responds.</div>
-        <div class="signal-meter weak" id="b-poh-signal"><i></i><i></i><i></i><i></i></div>
-        <div class="wiz-sub" id="b-poh-signal-label" style="margin-top:0;">Move closer…</div>
-        <div class="found-device-card" id="b-poh-found-card" style="display:none;">
-          <span class="found-device-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></span>
-          <span class="found-device-info"><span class="found-device-name">WW-RESET-C9A3</span><span class="found-device-sub">Signal −41 dBm — close enough</span></span>
-        </div>
-        <button class="btn-primary-full" id="b-poh-connect-btn" style="display:none;" onclick="pohConnect('b')">Connect</button>
-      </div>
-
-      <!-- Variant B: confirmation is inline, device card + cancel stay visible -->
-      <div class="wiz-screen centered" id="b-screen-poh-confirm">
-        <div class="found-device-card">
-          <span class="found-device-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></span>
-          <span class="found-device-info"><span class="found-device-name">WW-RESET-C9A3</span><span class="found-device-sub">Connected — waiting for confirmation</span></span>
-        </div>
-        <div class="confirm-inline-card">
-          <div class="countdown-ring-wrap">
-            <svg class="countdown-ring-svg" width="84" height="84" viewBox="0 0 84 84">
-              <circle class="countdown-ring-bg" cx="42" cy="42" r="36" stroke-width="6"/>
-              <circle class="countdown-ring-fg" id="b-countdown-ring" cx="42" cy="42" r="36" stroke-width="6" stroke-dasharray="226.2" stroke-dashoffset="0"/>
-            </svg>
-            <div class="countdown-ring-number" id="b-countdown-number">10</div>
-          </div>
-          <div class="wiz-heading" id="b-confirm-heading">Press any button on the device</div>
-          <div class="wiz-sub" id="b-confirm-sub">10 seconds to confirm you're at the device.</div>
-          <div class="cue-note" id="b-cue-note" style="margin-top:12px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13M9 9l12-2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-            <span class="cue-note-text">The device will beep and blink green while it's waiting.</span>
-          </div>
-          <div id="b-confirm-actions" style="width:100%;"></div>
-          <button class="btn-outline-full" style="max-width:280px;margin-top:14px;" id="b-confirm-sim-btn" onclick="simulateButtonPress('b')">Simulate Button Press (dev)</button>
-        </div>
-        <button class="btn-ghost-full" onclick="cancelPohConfirm('b')">Cancel</button>
-      </div>
-
-      <div class="wiz-screen" id="b-screen-mandatory-security">
-        <div class="screen-title" style="padding:0 0 2px;">Set a Login &amp; Password</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 14px;">Required before you can finish setup — this device cannot be left with no login configured.</div>
-        <div class="section-card">
-          <div class="safety-callout danger-tint">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17.5a1.6 1.6 0 0 0 1.4 2.5h16.2a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"/></svg>
-            <span class="safety-callout-text">This is the login for this physical device. If you forget the password, you'll need a factory reset to get back in.</span>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Choose Credentials</label>
-            <select class="field-select-full" id="b-cred-select" onchange="chooseCredential('b')">
-              <option value="">— Custom —</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Login</label>
-            <input class="field-input" id="b-sec-login" value="installer" oninput="markMandatorySecDirty('b')">
-          </div>
-          <div class="field-group">
-            <label class="field-label">Password</label>
-            <div class="field-input-wrap">
-              <input class="field-input" type="password" id="b-sec-newpass" style="padding-right:42px;" oninput="validateMandatorySec('b')">
-              <button type="button" class="field-eye" onclick="togglePw('b-sec-newpass')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-            <div class="field-helper">At least 8 characters.</div>
-            <div class="field-error" id="b-sec-newpass-error">Password must be at least 8 characters</div>
-          </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Confirm Password</label>
-            <div class="field-input-wrap">
-              <input class="field-input" type="password" id="b-sec-confirmpass" style="padding-right:42px;" oninput="validateMandatorySec('b')">
-              <button type="button" class="field-eye" onclick="togglePw('b-sec-confirmpass')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-            <div class="field-error" id="b-sec-confirmpass-error">Passwords don't match</div>
-          </div>
-          <div class="save-row-split">
-            <button class="btn-outline" type="button" onclick="storeCredentials('b')">Store Credentials</button>
-            <button class="btn-save" id="b-sec-save-btn" disabled onclick="trySaveMandatorySec('b')">
-              <span class="spinner"></span><span>Save &amp; Continue</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="wiz-screen centered" id="b-screen-complete">
-        <div class="complete-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
-        <div class="wiz-heading" style="margin-top:18px;">Setup Complete</div>
-        <div class="wiz-sub">Login and password are set. Your device is ready to use.</div>
-        <button class="btn-primary-full" onclick="finishSetup('b')">Continue to Dashboard</button>
-      </div>
-    </div>
-
-    <div id="b-toast" class="toast"></div>
-  </div>
-  <div class="dev-strip">
-    <span class="dev-label">Dev</span>
-    <button class="dev-btn current" data-outcome="found" onclick="setQrOutcome('b','found',event)">QR search: Found</button>
-    <button class="dev-btn" data-outcome="timeout" onclick="setQrOutcome('b','timeout',event)">QR search: Timeout</button>
-  </div>
-  <div class="dev-strip">
-    <span class="dev-label">Dev</span>
-    <button class="dev-btn current" data-outcome="ok" onclick="setVerifyOutcome('b','ok',event)">Verify: OK</button>
-    <button class="dev-btn" data-outcome="fail" onclick="setVerifyOutcome('b','fail',event)">Verify: Fail</button>
-  </div>
-  <div class="dev-strip">
-    <span class="dev-label">Dev</span>
-    <button class="dev-btn" onclick="simulatePohClose('b')">Simulate: Close enough (proximity)</button>
-  </div>
-  </div>
-</div>
-
 <script>
 const wiz = {
-  a: { path: null, qrOutcome: 'found', verifyOutcome: 'ok', pohSignal: 'weak', countdownTimer: null, countdownSeconds: 10, lockout: false, secDirty: false, selectedPresetIndex: 0 },
-  b: { path: null, qrOutcome: 'found', verifyOutcome: 'ok', pohSignal: 'weak', countdownTimer: null, countdownSeconds: 10, lockout: false, secDirty: false, selectedPresetIndex: 0 },
+  a: { path: null, countdownTimer: null, countdownSeconds: 10, secDirty: false },
 };
-
-// Same saved presets as stored-presets.html — every one shows up here, not just a hardcoded couple.
-const storedPresets = [
-  { name: 'Downtown Branch', config: 'Central+W2+R2IO' },
-  { name: 'Warehouse Entrance', config: 'Central+R2IO' },
-  { name: 'Retail Plaza A', config: 'Central+W2' },
-  { name: 'Parking Garage B', config: 'Central+W2+R2IO' },
-];
-function renderJobProfiles(v){
-  const picker = document.getElementById(v+'-job-profile-picker');
-  if(!picker) return;
-  picker.innerHTML = storedPresets.map((p,i) => `
-    <button type="button" class="profile-pick-row${i === wiz[v].selectedPresetIndex ? ' active' : ''}" onclick="selectJobProfile('${v}',event,${i})">
-      <div>
-        <div class="profile-pick-name">${p.name}</div>
-        <div class="profile-pick-summary">${p.config}</div>
-      </div>
-      <span class="profile-pick-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-    </button>`).join('');
-}
-renderJobProfiles('a');
-renderJobProfiles('b');
-
-function showVariant(v, e){
-  document.querySelectorAll('.variant').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.variant-tab').forEach(el=>el.classList.remove('active'));
-  document.getElementById('variant-'+v).classList.add('active');
-  e.target.classList.add('active');
-}
 
 function showToast(v, msg, isError){
   const t = document.getElementById(v+'-toast');
@@ -635,139 +388,91 @@ function showScreen(v, id, headerHtml){
 function backBtn(label, onclick){
   return `<button class="wiz-back" onclick="${onclick}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>${label}</button>`;
 }
-function stepIndicator(n){
-  return `<span class="wiz-step-indicator">Step ${n} of 3</span>`;
-}
-
 /* ---------- Entry ---------- */
 function chooseQR(v){ wiz[v].path = 'qr'; showScreen(v, 'qr-scan', backBtn('Back', `showScreen('${v}','entry')`)); }
 function choosePoh(v){ wiz[v].path = 'poh'; showScreen(v, 'poh-instructions', backBtn('Back', `showScreen('${v}','entry')`)); }
 
-/* ---------- QR path ---------- */
+/* ---------- QR path: scan -> search -> (not nearby | verify -> fail | credentials) ---------- */
 function simulateQRScan(v){ startQrSearch(v); }
 function startQrSearch(v){
-  showScreen(v, 'qr-search', backBtn('Back', `showScreen('${v}','qr-scan')`));
+  showScreen(v, 'qr-search', '');
   document.getElementById(v+'-qr-radar-core').className = 'radar-core';
   document.getElementById(v+'-qr-search-heading').textContent = 'Searching for SN-88392011…';
-  document.getElementById(v+'-qr-search-sub').textContent = 'Make sure the device is powered on and nearby.';
+  document.getElementById(v+'-qr-search-sub').textContent = 'Looking for the device over Bluetooth. Make sure it is powered on and nearby.';
+  const old = document.getElementById(v+'-qr-notnearby-btn'); if(old) old.remove();
   clearTimeout(wiz[v]._qrTimer);
+  // Demo: the QR device is found. Add ?notnearby to the URL to see the not-nearby result.
   wiz[v]._qrTimer = setTimeout(()=>{
-    if(wiz[v].qrOutcome === 'found') qrSearchFound(v); else qrSearchTimeout(v);
+    if(location.search.indexOf('notnearby') < 0) startQrVerify(v); else qrNotNearby(v);
   }, 1500);
 }
-function qrSearchFound(v){
-  startQrVerify(v);
-}
-function qrSearchTimeout(v){
+function qrNotNearby(v){
   document.getElementById(v+'-qr-radar-core').className = 'radar-core failed';
-  document.getElementById(v+'-qr-search-heading').textContent = 'Device not found';
-  document.getElementById(v+'-qr-search-sub').innerHTML = "Make sure it's powered on and within range, then try again.";
+  document.getElementById(v+'-qr-search-heading').textContent = 'Device is not nearby';
+  document.getElementById(v+'-qr-search-sub').textContent = "SN-88392011 wasn't found within range, but it has been added to your devices. Once it is online, connect to it from the Bluetooth scan.";
   const content = document.getElementById(v+'-screen-qr-search');
-  if(!document.getElementById(v+'-qr-retry-btn')){
-    const btn = document.createElement('button');
-    btn.id = v+'-qr-retry-btn';
-    btn.className = 'btn-primary-full';
-    btn.textContent = 'Try Again';
-    btn.onclick = () => startQrSearch(v);
-    content.appendChild(btn);
-  }
+  const btn = document.createElement('button');
+  btn.id = v+'-qr-notnearby-btn';
+  btn.className = 'btn-primary-full';
+  btn.textContent = 'Back to Device List';
+  btn.onclick = () => { window.location.href = 'device-scan.html'; };
+  content.appendChild(btn);
 }
 function startQrVerify(v){
   showScreen(v, 'qr-verify', '');
   document.getElementById(v+'-qr-verify-core').className = 'radar-core';
-  document.getElementById(v+'-qr-verify-spinner').style.display = 'block';
+  document.getElementById(v+'-qr-verify-core').innerHTML = '<span class="spin-ring" style="width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,0.35);border-top-color:#fff;animation:spin 0.8s linear infinite;display:block;"></span>';
   document.getElementById(v+'-qr-verify-heading').textContent = 'Verifying device identity…';
   document.getElementById(v+'-qr-verify-sub').textContent = "Checking the device's factory credentials against the QR code you scanned.";
   document.getElementById(v+'-qr-verify-actions').style.display = 'none';
   document.getElementById(v+'-qr-verify-actions').innerHTML = '';
+  // Demo: verification succeeds. Add ?verifyfail to the URL to see the failure state.
   setTimeout(()=>{
-    if(wiz[v].verifyOutcome === 'ok') qrVerifyOk(v); else qrVerifyFail(v);
+    if(location.search.indexOf('verifyfail') < 0) showMandatorySecurity(v); else qrVerifyFail(v);
   }, 1300);
 }
-function qrVerifyOk(v){
-  document.getElementById(v+'-qr-verify-spinner').style.display = 'none';
-  document.getElementById(v+'-qr-verify-core').className = 'radar-core success';
-  document.getElementById(v+'-qr-verify-core').innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
-  document.getElementById(v+'-qr-verify-heading').textContent = 'Verified';
-  document.getElementById(v+'-qr-verify-sub').textContent = 'Device identity confirmed.';
-  setTimeout(()=>showMandatorySecurity(v), 900);
-}
 function qrVerifyFail(v){
-  document.getElementById(v+'-qr-verify-spinner').style.display = 'none';
   document.getElementById(v+'-qr-verify-core').className = 'radar-core failed';
   document.getElementById(v+'-qr-verify-core').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';
   document.getElementById(v+'-qr-verify-heading').textContent = "Couldn't verify this device";
   document.getElementById(v+'-qr-verify-sub').textContent = "The device didn't respond the way we expected. Try again in 30 seconds.";
   const actions = document.getElementById(v+'-qr-verify-actions');
   actions.style.display = 'block';
-  actions.innerHTML = '<button class="btn-primary-full" disabled id="'+v+'-qr-verify-retry">Try Again (30s)</button>';
-  let secs = 3; // compressed demo timer; copy still says 30s to match the real spec
-  const btn = document.getElementById(v+'-qr-verify-retry');
-  const iv = setInterval(()=>{
-    secs--;
-    if(secs <= 0){ clearInterval(iv); btn.disabled = false; btn.textContent = 'Try Again'; btn.onclick = () => startQrSearch(v); }
-  }, 1000);
+  actions.innerHTML = '<button class="btn-primary-full" id="'+v+'-qr-verify-retry">Try Again</button>';
+  document.getElementById(v+'-qr-verify-retry').onclick = () => startQrSearch(v);
 }
 
-function setQrOutcome(v, outcome, evt){
-  wiz[v].qrOutcome = outcome;
-  evt.target.parentElement.querySelectorAll('.dev-btn[data-outcome]').forEach(b=>b.classList.remove('current'));
-  evt.target.classList.add('current');
-}
-function setVerifyOutcome(v, outcome, evt){
-  wiz[v].verifyOutcome = outcome;
-  evt.target.parentElement.querySelectorAll('.dev-btn[data-outcome]').forEach(b=>b.classList.remove('current'));
-  evt.target.classList.add('current');
-}
-
-/* ---------- Power-On Hold path ---------- */
+/* ---------- Reset & Recover path ---------- */
 function startPohSearch(v){
-  showScreen(v, 'poh-search', backBtn('Back', `showScreen('${v}','poh-instructions')`));
-  document.getElementById(v+'-poh-signal').className = 'signal-meter weak';
+  showScreen(v, 'poh-search', '');
   document.getElementById(v+'-poh-signal-label').textContent = 'Move closer…';
+  document.getElementById(v+'-poh-signal-label').style.color = '';
   document.getElementById(v+'-poh-found-card').style.display = 'none';
   document.getElementById(v+'-poh-connect-btn').style.display = 'none';
   clearTimeout(wiz[v]._pohTimer);
   wiz[v]._pohTimer = setTimeout(() => simulatePohClose(v), 1800);
 }
 function simulatePohClose(v){
-  document.getElementById(v+'-poh-signal').className = 'signal-meter strong';
   document.getElementById(v+'-poh-signal-label').textContent = 'Close enough';
+  document.getElementById(v+'-poh-signal-label').style.color = 'var(--color-success)';
   document.getElementById(v+'-poh-found-card').style.display = 'flex';
   document.getElementById(v+'-poh-connect-btn').style.display = 'block';
 }
-function pohConnect(v){
-  if(v === 'a'){
-    openFullConfirm(v);
-  } else {
-    showScreen(v, 'poh-confirm', '');
-    resetConfirmUI(v);
-    startCountdown(v);
-  }
-}
-function cancelPohConfirm(v){
-  clearInterval(wiz[v].countdownTimer);
-  showScreen(v, 'poh-search', backBtn('Back', `showScreen('${v}','poh-instructions')`));
-}
+function pohConnect(v){ openFullConfirm(v); }
 
-/* ---------- Physical-click confirmation (variant-specific container) ---------- */
+/* ---------- Physical-button confirmation: full-screen 10 s countdown ---------- */
 function openFullConfirm(v){
   document.getElementById(v+'-confirm-full').classList.add('open');
   resetConfirmUI(v);
   startCountdown(v);
 }
-function closeFullConfirm(v){
-  document.getElementById(v+'-confirm-full').classList.remove('open');
-}
+function closeFullConfirm(v){ document.getElementById(v+'-confirm-full').classList.remove('open'); }
 function resetConfirmUI(v){
-  const prefix = v === 'a' ? 'a-' : 'b-';
-  document.getElementById(prefix+'confirm-heading').textContent = v === 'a' ? 'Press any button on the device now' : 'Press any button on the device';
-  document.getElementById(prefix+'confirm-sub').textContent = v === 'a' ? "You have 10 seconds to confirm you're physically at the device." : '10 seconds to confirm you’re at the device.';
-  document.getElementById(prefix+'cue-note').style.display = 'flex';
-  document.getElementById(prefix+'confirm-actions').innerHTML = '';
-  document.getElementById(prefix+'confirm-sim-btn').style.display = 'block';
-  const ring = document.getElementById(prefix+'countdown-ring');
-  ring.classList.remove('urgent');
+  document.getElementById(v+'-confirm-heading').textContent = 'Press any button on the device now';
+  document.getElementById(v+'-cue-note').style.display = 'flex';
+  document.getElementById(v+'-confirm-actions').innerHTML = '';
+  document.getElementById(v+'-confirm-sim-btn').style.display = 'block';
+  document.getElementById(v+'-countdown-ring').classList.remove('urgent');
 }
 function startCountdown(v){
   wiz[v].countdownSeconds = 10;
@@ -775,62 +480,36 @@ function startCountdown(v){
   clearInterval(wiz[v].countdownTimer);
   wiz[v].countdownTimer = setInterval(()=>{
     wiz[v].countdownSeconds--;
-    if(wiz[v].countdownSeconds <= 0){
-      clearInterval(wiz[v].countdownTimer);
-      countdownTimeout(v);
-      return;
-    }
+    if(wiz[v].countdownSeconds <= 0){ clearInterval(wiz[v].countdownTimer); countdownTimeout(v); return; }
     updateCountdownUI(v);
   }, 1000);
 }
 function updateCountdownUI(v){
-  const prefix = v === 'a' ? 'a-' : 'b-';
   const s = wiz[v].countdownSeconds;
-  document.getElementById(prefix+'countdown-number').textContent = s;
-  const ring = document.getElementById(prefix+'countdown-ring');
-  const circumference = v === 'a' ? 326.7 : 226.2;
-  ring.setAttribute('stroke-dashoffset', String(circumference * (1 - s/10)));
+  document.getElementById(v+'-countdown-number').textContent = s;
+  document.getElementById(v+'-confirm-sub').textContent = 'You have ' + s + " seconds to confirm you're physically at the device.";
+  const ring = document.getElementById(v+'-countdown-ring');
+  ring.setAttribute('stroke-dashoffset', String(326.7 * (1 - s/10)));
   ring.classList.toggle('urgent', s <= 3);
 }
 function simulateButtonPress(v){
   clearInterval(wiz[v].countdownTimer);
-  const prefix = v === 'a' ? 'a-' : 'b-';
-  document.getElementById(prefix+'confirm-heading').textContent = 'Confirmed';
-  document.getElementById(prefix+'confirm-sub').textContent = 'Device authenticated.';
-  document.getElementById(prefix+'cue-note').style.display = 'none';
-  document.getElementById(prefix+'confirm-sim-btn').style.display = 'none';
-  document.getElementById(prefix+'countdown-number').innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2BA23E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
-  setTimeout(()=>{
-    if(v === 'a') closeFullConfirm(v);
-    showMandatorySecurity(v);
-  }, 900);
+  closeFullConfirm(v);
+  showMandatorySecurity(v);
 }
 function countdownTimeout(v){
-  const prefix = v === 'a' ? 'a-' : 'b-';
-  document.getElementById(prefix+'confirm-heading').textContent = "Time's up";
-  document.getElementById(prefix+'confirm-sub').textContent = 'No button press detected within 10 seconds.';
-  document.getElementById(prefix+'cue-note').style.display = 'none';
-  document.getElementById(prefix+'confirm-sim-btn').style.display = 'none';
-  document.getElementById(prefix+'countdown-number').innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D34247" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-  const actions = document.getElementById(prefix+'confirm-actions');
-  actions.innerHTML = '<button class="btn-primary-full" disabled id="'+prefix+'retry-btn">Try Again (30s)</button>';
-  let secs = 3; // compressed demo timer; copy still says 30s to match the real spec
-  const btn = document.getElementById(prefix+'retry-btn');
-  const iv = setInterval(()=>{
-    secs--;
-    if(secs <= 0){
-      clearInterval(iv);
-      btn.disabled = false;
-      btn.textContent = 'Try Again';
-      btn.onclick = () => { if(v==='a') closeFullConfirm(v); pohConnect(v); };
-    }
-  }, 1000);
+  document.getElementById(v+'-confirm-heading').textContent = "Time's up";
+  document.getElementById(v+'-confirm-sub').textContent = 'No button press detected within 10 seconds.';
+  document.getElementById(v+'-cue-note').style.display = 'none';
+  document.getElementById(v+'-confirm-sim-btn').style.display = 'none';
+  document.getElementById(v+'-countdown-number').innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D34247" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  const actions = document.getElementById(v+'-confirm-actions');
+  actions.innerHTML = '<button class="btn-primary-full" id="'+v+'-retry-btn">Try Again</button>';
+  document.getElementById(v+'-retry-btn').onclick = () => { closeFullConfirm(v); pohConnect(v); };
 }
 
 /* ---------- Mandatory login & password (no skip, no back) ---------- */
-function showMandatorySecurity(v){
-  showScreen(v, 'mandatory-security', '');
-}
+function showMandatorySecurity(v){ showScreen(v, 'mandatory-security', ''); }
 function togglePw(id){
   const input = document.getElementById(id);
   input.type = input.type === 'password' ? 'text' : 'password';
@@ -866,35 +545,8 @@ function trySaveMandatorySec(v){
   if(btn.disabled) return;
   btn.classList.add('loading');
   btn.disabled = true;
-  setTimeout(()=>{
-    btn.classList.remove('loading');
-    showScreen(v, 'apply-config', '');
-  }, 900);
-}
-function selectJobProfile(v, evt, i){
-  wiz[v].selectedPresetIndex = i;
-  document.querySelectorAll('#' + v + '-job-profile-picker .profile-pick-row').forEach(r => r.classList.remove('active'));
-  evt.currentTarget.classList.add('active');
-}
-function applyStagedConfig(v, evt){
-  const btn = evt.currentTarget;
-  const active = document.querySelector('#' + v + '-job-profile-picker .profile-pick-row.active .profile-pick-name');
-  const presetName = active ? active.textContent : 'the selected preset';
-  btn.disabled = true;
-  btn.textContent = 'Applying…';
-  setTimeout(()=>{
-    document.getElementById(v+'-complete-sub').textContent = 'Login and password are set, and the "' + presetName + '" preset has been applied — this unit\'s role was auto-generated from the preset. Your device is ready to use.';
-    showScreen(v, 'complete', '');
-    btn.disabled = false;
-    btn.textContent = 'Apply Preset';
-  }, 900);
-}
-function skipStagedConfig(v){
-  document.getElementById(v+'-complete-sub').textContent = 'Login and password are set. Your device is ready to use.';
-  showScreen(v, 'complete', '');
-}
-function finishSetup(v){
-  showToast(v, 'Would route directly to System Info (out of scope for this sketch).');
+  // New login/password set -> straight to Home (presets can be applied later from Stored Presets).
+  setTimeout(()=>{ window.location.href = 'home.html'; }, 900);
 }
 
 /* ---------- Stored credentials: reuse a login/password pair across devices ---------- */
@@ -949,7 +601,6 @@ function storeCredentials(v){
     savedCredentials.push({ login, password });
   }
   renderCredentialSelect('a');
-  renderCredentialSelect('b');
   const sel = document.getElementById(v+'-cred-select');
   if(sel){ sel.value = login; if(sel._wwSync) sel._wwSync(); }
   showToast(v, 'Credentials stored as "' + login + '"');
@@ -1024,8 +675,6 @@ document.addEventListener('keydown', function(e){
 
 renderCredentialSelect('a');
 chooseCredential('a');
-renderCredentialSelect('b');
-chooseCredential('b');
 enhanceSelects();
 </script>
 </body>

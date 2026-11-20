@@ -56,7 +56,7 @@
   .ww-select-trigger svg { flex-shrink: 0; color: var(--color-text-faint); transition: transform 0.15s ease; }
   .ww-select.open .ww-select-trigger svg { transform: rotate(180deg); }
   .ww-select.disabled .ww-select-trigger { opacity: 0.5; cursor: not-allowed; }
-  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 240px; overflow-y: auto; z-index: 30; display: none; }
+  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 212px; overflow-y: auto; z-index: 30; display: none; }
   .ww-select.open .ww-select-panel { display: block; }
   .ww-select-option { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text); cursor: pointer; }
   .ww-select-option:hover { background: var(--color-accent-bg); }
@@ -69,6 +69,12 @@
   .btn-save:disabled { background: #C9CCD1; color: #fff; cursor: not-allowed; }
   .btn-save .spinner { display: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; animation: spin 0.8s linear infinite; }
   .btn-save.loading .spinner { display: inline-block; }
+  .dist-segmented { display: flex; background: #EAECEF; border-radius: 15px; padding: 3px; }
+  .dist-segmented button { flex: 1; appearance: none; border: none; background: transparent; color: var(--color-text-muted); font-size: 14px; font-weight: 600; padding: 12px 4px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; }
+  .dist-segmented button.active { background: #fff; color: var(--color-primary); box-shadow: 0 2px 6px rgba(27,36,48,0.1); }
+  .dist-title { font-size: 13px; font-weight: 600; color: var(--color-text); margin: 12px 0 6px; }
+  .dist-line { font-size: 12.5px; line-height: 1.5; color: var(--color-text-muted); margin-top: 4px; }
+  .dist-line b { font-weight: 600; }
   .save-row { display: flex; align-items: center; justify-content: flex-end; margin-top: 16px; gap: 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -162,6 +168,15 @@
           <option>Australia — 915 MHz ISM</option>
         </select>
         <div class="field-helper">Sets the radio's regulatory band for your installation's country — not a performance preference.</div>
+      </div>
+      <div class="field-group" style="margin:14px 0 0;">
+        <label class="field-label">Communication Distance</label>
+        <div class="dist-segmented">
+          <button type="button" class="active" onclick="setDistance('long', this)">Long Range</button>
+          <button type="button" onclick="setDistance('short', this)">Short Range</button>
+        </div>
+        <div class="dist-title" id="dist-title">Long Range (up to 800 m)</div>
+        <div id="dist-lines"></div>
       </div>
       <div class="save-row">
         <button class="btn-save" id="radio-save-btn" disabled onclick="trySave()">
@@ -270,6 +285,26 @@ function trySave(){
     state.dirty = false;
   }, 900);
 }
+
+const DIST = {
+  long: ['Long Range (up to 800 m)', [['Wiegand','Enabled on CENTRAL & REMOTE devices'],['Wiegand','Enabled on Extension boards'],['OSDP','Disabled'],['RS485','Disabled']]],
+  short: ['Short Range (up to 400 m)', [['Wiegand','Disabled on CENTRAL & REMOTE devices'],['Wiegand','Enabled on Extension boards'],['OSDP','Enabled'],['RS485','Enabled']]],
+};
+function setDistance(mode, btn){
+  try { if(btn) localStorage.setItem('wwDistance', mode); } catch(e) {}
+  if(btn){ btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); markDirty(); }
+  document.getElementById('dist-title').textContent = DIST[mode][0];
+  document.getElementById('dist-lines').innerHTML = DIST[mode][1].map(l => `<div class="dist-line"><b>• ${l[0]}:</b> ${l[1]}</div>`).join('');
+}
+(function(){
+  let m = 'long';
+  try { m = localStorage.getItem('wwDistance') || 'long'; } catch(e) {}
+  setDistance(m);
+  if(m === 'short'){
+    const bs = document.querySelectorAll('.dist-segmented button');
+    bs[0].classList.remove('active'); bs[1].classList.add('active');
+  }
+})();
 
 let PAIRED = { id:'cur', name:'WW-REMOTE-B01C44', signal:'−58 dBm' };
 function renderEdges(){

@@ -52,7 +52,7 @@
   .ww-select-trigger svg { flex-shrink: 0; color: var(--color-text-faint); transition: transform 0.15s ease; }
   .ww-select.open .ww-select-trigger svg { transform: rotate(180deg); }
   .ww-select.disabled .ww-select-trigger { opacity: 0.5; cursor: not-allowed; }
-  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 240px; overflow-y: auto; z-index: 30; display: none; }
+  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 212px; overflow-y: auto; z-index: 30; display: none; }
   .ww-select.open .ww-select-panel { display: block; }
   .ww-select-option { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text); cursor: pointer; }
   .ww-select-option:hover { background: var(--color-accent-bg); }
@@ -127,32 +127,29 @@
   </div>
 
   <div class="content">
-    <div class="section-card">
+    <div class="section-card" id="dp-short" style="display:none;">
       <div class="section-heading">Data Port</div>
-      <div class="section-intro">This unit has one physical reader port — set it to match the reader you've wired to it. This also sets the radio module's operating mode (FSK for OSDP, LoRa for Wiegand/RS485) and how I/O 1–4 are assigned — see I/O Port Assignment below.</div>
-      <div class="mode-segmented">
-        <button type="button" id="dataport-wiegand-btn" disabled title="Unavailable — W2 Expansion Board installed" onclick="setPortMode('wiegand',event)">Wiegand</button>
-        <button type="button" class="active" onclick="setPortMode('osdp',event)">OSDP</button>
-        <button type="button" onclick="setPortMode('rs485',event)">RS485</button>
+      <div class="field-helper" style="margin:0;font-style:normal;font-size:12.5px;line-height:1.5;color:var(--color-text-muted);">Wiegand settings are available only on expansion boards. Open Expansion Boards and choose the W2 board to configure its reader ports.</div>
+    </div>
+
+    <div class="section-card" id="dp-long">
+      <div class="section-heading" style="margin-bottom:6px;">Data Port</div>
+      <div class="section-intro" style="margin:0 0 16px;">This unit has one physical reader port — set it to match the Wiegand reader you've wired to it. Be sure to disable the 120Ω termination resistor under the connector.</div>
+      <div class="field-group">
+        <label class="field-label">Reader Type</label>
+        <select class="field-select-full" id="reader-type" onchange="markDirty()">
+          <option>Wiegand 4</option><option>Wiegand 8</option><option selected>Wiegand 26 Standard</option>
+          <option>Wiegand 26 H10301</option><option>Wiegand 32</option><option>Wiegand 34 Fac 1 Byte</option>
+          <option>Wiegand 34 Fac 2 Byte</option><option>Wiegand 35 Corporate 1000</option><option>Wiegand 36</option>
+          <option>Wiegand 37 H10302</option><option>Wiegand 37 H10304</option><option>Wiegand 42</option>
+          <option>Wiegand 48 Corporate 1000</option><option>RAW</option>
+        </select>
       </div>
-      <div class="field-helper" id="dataport-w2-note" style="margin:-4px 0 10px;">Wiegand is unavailable — the W2 Expansion Board already provides 2 Wiegand ports (see Expansion Boards).</div>
-      <div class="field-helper" id="dataport-term-note" style="margin:-4px 0 16px;"></div>
-      <div class="mode-fields" id="wiegand-fields">
-        <div class="field-group">
-          <label class="field-label">Reader Type</label>
-          <select class="field-select-full" id="reader-type" onchange="markDirty()">
-            <option>Wiegand 4</option><option>Wiegand 8</option><option selected>Wiegand 26 Standard</option>
-            <option>Wiegand 26 H10301</option><option>Wiegand 32</option><option>Wiegand 34 Fac 1 Byte</option>
-            <option>Wiegand 34 Fac 2 Byte</option><option>Wiegand 35 Corporate 1000</option><option>Wiegand 36</option>
-            <option>Wiegand 37 H10302</option><option>Wiegand 37 H10304</option><option>Wiegand 42</option>
-            <option>Wiegand 48 Corporate 1000</option><option>RAW</option>
-          </select>
-        </div>
-        <div class="toggle-row" style="margin-bottom:0;">
-          <div class="field-text"><div class="field-label">Manual Timing</div><div class="field-helper" style="margin-top:3px;">Set exact Pulse/Interpulse widths instead of using the Reader Type preset's built-in timing.</div></div>
-          <label class="switch"><input type="checkbox" id="manual-input" onchange="setManualTiming(this.checked)"><span class="track"><span class="thumb"></span></span></label>
-        </div>
-        <div class="manual-timing-fields" id="manual-timing-fields">
+      <div class="toggle-row" style="margin-bottom:0;">
+        <div class="field-text"><div class="field-label">Manual Timing</div><div class="field-helper" style="margin-top:3px;">Set exact Pulse/Interpulse widths instead of using the Reader Type preset's built-in timing.</div></div>
+        <label class="switch"><input type="checkbox" id="manual-input" onchange="setManualTiming(this.checked)"><span class="track"><span class="thumb"></span></span></label>
+      </div>
+      <div class="manual-timing-fields" id="manual-timing-fields">
         <div class="field-group" style="margin-top:14px;">
           <label class="field-label">Pulse (μs)</label>
           <input class="field-input" id="pulse" value="100" oninput="markDirty()">
@@ -161,42 +158,12 @@
           <label class="field-label">Interpulse (μs)</label>
           <input class="field-input" id="interpulse" value="1000" oninput="markDirty()">
         </div>
-        </div>
-      </div>
-      <div class="mode-fields active" id="osdp-fields">
-        <div class="field-group">
-          <label class="field-label">Device Address</label>
-          <input class="field-input" type="number" value="0" min="0" max="126" oninput="markDirty()">
-          <div class="field-helper">Must match the address configured on the OSDP reader itself (0–126).</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Baud Rate</label>
-          <select class="field-select-full" onchange="markDirty()">
-            <option>9600</option><option selected>19200</option><option>38400</option><option>115200</option>
-          </select>
-        </div>
-        <div class="toggle-row" style="margin-bottom:0;">
-          <div class="field-text">
-            <div class="field-label">Secure Channel</div>
-            <div class="field-helper" style="margin-top:0;">Encrypts reader communication (OSDP Secure Channel / AES-128). The reader must support it too.</div>
-          </div>
-          <label class="switch"><input type="checkbox" checked onchange="markDirty()"><span class="track"><span class="thumb"></span></span></label>
-        </div>
-      </div>
-      <div class="mode-fields" id="rs485-fields">
-        <div class="field-helper" style="margin-top:0;" id="rs485-io-note">Raw RS485 passthrough — no Wiegand or OSDP reader protocol. I/O 1–4 default to a fixed direction (reassignable on I/O Ports) instead of a reader function.</div>
       </div>
       <div class="save-row">
         <button class="btn-save" id="dataport-save-btn" disabled onclick="trySave()">
           <span class="spinner"></span><span>Save</span>
         </button>
       </div>
-    </div>
-
-    <div class="section-card">
-      <div class="section-heading">I/O Port Assignment</div>
-      <div class="section-intro" id="iomap-intro"></div>
-      <div id="iomap-rows"></div>
     </div>
   </div>
 
@@ -216,26 +183,11 @@
 
 <script>
 document.querySelector('#ww-tabbar .active')?.scrollIntoView({inline:'center', block:'nearest'});
-const state = { role: 'gate', dataPortMode: 'osdp', hasW2Board: true, dirty: false };
-const W2_MAP = {
-  gate: [['REX 1','Output'],['DPS 1','Output'],['REX 2','Output'],['DPS 2','Output']],
-  edge: [['REX 1','Input'],['DPS 1','Input'],['REX 2','Input'],['DPS 2','Input']],
-};
-const IO_MAP = {
-  osdp: {
-    gate: [['REX 1','Output'],['DPS 1','Output'],['REX 2','Output'],['DPS 2','Output']],
-    edge: [['REX 1','Input'],['DPS 1','Input'],['REX 2','Input'],['DPS 2','Input']],
-  },
-  wiegand: {
-    gate: [['REX','Output'],['DPS','Output'],['LED','Input'],['BUZ','Input']],
-    edge: [['REX','Input'],['DPS','Input'],['LED','Output'],['BUZ','Output']],
-  },
-};
-const TERM_NOTE = {
-  wiegand: 'Be sure to disable the 120Ω termination resistor under the connector.',
-  osdp: 'If the RS485 connection is unreliable, you can enable the 120Ω termination resistor with the switch under the connector.',
-  rs485: 'If the RS485 connection is unreliable, you can enable the 120Ω termination resistor with the switch under the connector.',
-};
+// Communication Distance is set on the Radio screen (radio.html stores it here).
+let distance = 'long';
+try { distance = localStorage.getItem('wwDistance') || 'long'; } catch(e) {}
+document.getElementById('dp-long').style.display = distance === 'long' ? '' : 'none';
+document.getElementById('dp-short').style.display = distance === 'long' ? 'none' : '';
 
 function toast(msg){
   const el = document.getElementById('toast');
@@ -244,65 +196,19 @@ function toast(msg){
   clearTimeout(el._t);
   el._t = setTimeout(()=>el.classList.remove('show'), 2600);
 }
-function markDirty(){
-  state.dirty = true;
-  document.getElementById('dataport-save-btn').disabled = false;
-}
+function markDirty(){ document.getElementById('dataport-save-btn').disabled = false; }
 function trySave(){
   const btn = document.getElementById('dataport-save-btn');
   if(btn.disabled) return;
   btn.classList.add('loading');
   btn.disabled = true;
-  setTimeout(()=>{
-    btn.classList.remove('loading');
-    toast('Saved');
-    state.dirty = false;
-  }, 900);
-}
-
-function renderIOMap(){
-  const introEl = document.getElementById('iomap-intro');
-  const rowsEl = document.getElementById('iomap-rows');
-  document.getElementById('rs485-io-note').textContent = state.hasW2Board
-    ? 'Raw RS485 passthrough — no Wiegand or OSDP reader protocol. I/O 1–4 are still claimed by the W2 Expansion Board (see I/O Port Assignment above), not freed up by RS485 mode.'
-    : 'Raw RS485 passthrough — no Wiegand or OSDP reader protocol. I/O 1–4 default to a fixed direction (reassignable on I/O Ports) instead of a reader function.';
-  if(state.hasW2Board){
-    introEl.textContent = 'Locked by the W2 Expansion Board — it claims I/O 1–4 for its 2 Wiegand doors\' REX/DPS signals regardless of this unit\'s Data Port mode.';
-    rowsEl.innerHTML = W2_MAP[state.role].map((pair, i) =>
-      `<div class="iomap-row"><span class="iomap-port">I/O ${i+1}</span><span class="iomap-value">${pair[0]} · ${pair[1]}</span></div>`
-    ).join('');
-    return;
-  }
-  const mode = state.dataPortMode;
-  if(mode === 'rs485'){
-    introEl.textContent = 'RS485 mode has no reader function on I/O 1–4 — each defaults to ' + (state.role==='gate' ? 'Input' : 'Output') + ' and is fully reassignable on I/O Ports.';
-    rowsEl.innerHTML = '';
-  } else {
-    introEl.textContent = 'Fixed by this Data Port mode — not reassignable. Switch to RS485 to assign I/O 1–4 manually on I/O Ports.';
-    rowsEl.innerHTML = IO_MAP[mode][state.role].map((pair, i) =>
-      `<div class="iomap-row"><span class="iomap-port">I/O ${i+1}</span><span class="iomap-value">${pair[0]} · ${pair[1]}</span></div>`
-    ).join('');
-  }
-}
-function setPortMode(mode, evt){
-  state.dataPortMode = mode;
-  document.getElementById('wiegand-fields').classList.toggle('active', mode==='wiegand');
-  document.getElementById('osdp-fields').classList.toggle('active', mode==='osdp');
-  document.getElementById('rs485-fields').classList.toggle('active', mode==='rs485');
-  document.getElementById('dataport-term-note').textContent = TERM_NOTE[mode];
-  evt.currentTarget.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-  evt.currentTarget.classList.add('active');
-  renderIOMap();
-  markDirty();
+  setTimeout(()=>{ btn.classList.remove('loading'); toast('Saved'); }, 900);
 }
 function setManualTiming(on){
   document.getElementById('reader-type').disabled = on;
   document.getElementById('manual-timing-fields').classList.toggle('show', on);
   markDirty();
 }
-
-document.getElementById('dataport-term-note').textContent = TERM_NOTE[state.dataPortMode];
-renderIOMap();
 
 function enhanceSelects(){
   document.querySelectorAll('select.field-select-full:not(.ww-select-native)').forEach(function(sel){

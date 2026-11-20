@@ -53,9 +53,10 @@
   .preset-table td { font-size: 13px; color: var(--color-text); padding: 9px 12px; border-top: 1px solid var(--color-border); }
 
   .io-port-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .io-seg { display: flex; background: #EAECEF; border-radius: 8px; padding: 2px; width: 150px; }
-  .io-seg button { flex: 1; appearance: none; border: none; background: transparent; color: var(--color-text-muted); font-size: 11.5px; font-weight: 600; padding: 6px 2px; border-radius: 6px; cursor: pointer; }
-  .io-seg button.active { background: #fff; color: var(--color-primary); box-shadow: 0 1px 4px rgba(27,36,48,0.12); }
+  .io-seg { display: flex; background: #EAECEF; border-radius: 15px; padding: 3px; width: 192px; height: 40px; flex-shrink: 0; }
+  .io-seg.locked { opacity: 0.5; pointer-events: none; }
+  .io-seg button { flex: 1; appearance: none; border: none; background: transparent; color: var(--color-text-muted); font-size: 14px; font-weight: 600; padding: 0 2px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
+  .io-seg button.active { background: #fff; color: var(--color-primary); box-shadow: 0 2px 6px rgba(27,36,48,0.1); }
 </style>
 </head>
 <body>
@@ -97,18 +98,19 @@
     </div>
 
     <div class="section-card">
-      <div class="section-title">Relay Failsafe</div>
+      <div class="section-title" style="margin-bottom:14px;">Relay Failsafe</div>
+      <div class="section-intro" id="locked-note" style="display:none;font-style:italic;font-size:11px;line-height:1.4;">Set by Global Relay Failsafe (Expansion Boards) — it applies to every relay on the connected boards.</div>
       <div class="subsection-heading">Relay 3 (R2IO)</div>
       <div class="io-port-head" style="margin-bottom:8px;">
         <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Power Loss</span>
-        <div class="io-seg" style="width:150px;">
+        <div class="io-seg">
           <button type="button" class="active" onclick="setBoardRelay(event)">Fail Secure</button>
           <button type="button" onclick="setBoardRelay(event)">Fail Safe</button>
         </div>
       </div>
       <div class="io-port-head">
         <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Radio-Link Loss</span>
-        <div class="io-seg" style="width:150px;">
+        <div class="io-seg">
           <button type="button" class="active" onclick="setBoardRelay(event)">Fail Secure</button>
           <button type="button" onclick="setBoardRelay(event)">Fail Safe</button>
         </div>
@@ -117,14 +119,14 @@
       <div class="subsection-heading">Relay 4 (R2IO)</div>
       <div class="io-port-head" style="margin-bottom:8px;">
         <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Power Loss</span>
-        <div class="io-seg" style="width:150px;">
+        <div class="io-seg">
           <button type="button" onclick="setBoardRelay(event)">Fail Secure</button>
           <button type="button" class="active" onclick="setBoardRelay(event)">Fail Safe</button>
         </div>
       </div>
       <div class="io-port-head">
         <span style="font-size:12px;color:var(--color-text-muted);font-weight:500;">On Radio-Link Loss</span>
-        <div class="io-seg" style="width:150px;">
+        <div class="io-seg">
           <button type="button" onclick="setBoardRelay(event)">Fail Secure</button>
           <button type="button" class="active" onclick="setBoardRelay(event)">Fail Safe</button>
         </div>
@@ -139,6 +141,18 @@ function setBoardRelay(evt){
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
+// Hard link: while Global Relay Failsafe (Expansion Boards) is on, Relay 3/4 show its values and are locked.
+(function(){
+  let g = {enabled:true, pl:'secure', rl:'secure'};
+  try { g = Object.assign(g, JSON.parse(localStorage.getItem('wwGlobal')||'{}')); } catch(e) {}
+  if(!g.enabled) return;
+  document.getElementById('locked-note').style.display = 'block';
+  document.querySelectorAll('.io-seg').forEach(function(seg, i){
+    const mode = i % 2 === 0 ? g.pl : g.rl;
+    seg.classList.add('locked');
+    seg.querySelectorAll('button').forEach((b, k)=>b.classList.toggle('active', (k===1)===(mode==='safe')));
+  });
+})();
 </script>
 </body>
 </html>

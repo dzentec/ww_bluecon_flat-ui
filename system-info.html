@@ -96,6 +96,7 @@
           <span class="status-word good">Mains</span>
         </span>
       </div>
+      <div class="info-row"><span class="info-label">Communication Distance</span><span class="info-value" id="dist-value">Long Range</span></div>
       <div class="section-heading">Device Identity</div>
       <div class="info-row"><span class="info-label">Model</span><span class="info-value">WW-4000</span></div>
       <div class="info-row"><span class="info-label">Serial Number</span><span class="info-value">7C3A1F092D81EFAB33</span></div>
@@ -116,5 +117,8 @@
     </div>
   </div>
 </div>
+<script>
+try { if(localStorage.getItem('wwDistance') === 'short') document.getElementById('dist-value').textContent = 'Short Range'; } catch(e) {}
+</script>
 </body>
 </html>

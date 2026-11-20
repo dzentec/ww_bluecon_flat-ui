@@ -43,13 +43,47 @@
 
   .section-card { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card-sm); margin: 0 24px 16px; padding: 18px; }
   .section-title { font-size: 17px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; }
-  .section-intro { font-size: 12.5px; color: var(--color-text-faint); line-height: 1.5; margin-bottom: 14px; }
 
-  .io-port-row { padding: 11px 0; border-top: 1px solid var(--color-border); }
-  .io-port-row:first-of-type { border-top: none; }
-  .io-port-head { display: flex; align-items: center; justify-content: space-between; }
-  .io-port-name { font-size: 14px; font-weight: 600; color: var(--color-text); }
-  .io-port-locked-tag { font-size: 11px; font-weight: 600; color: var(--color-text-muted); background: #EEF0F2; padding: 6px 11px; border-radius: 8px; }
+  .field-group { margin-bottom: 14px; }
+  .field-group:last-child { margin-bottom: 0; }
+  .field-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 6px; display: block; font-weight: 500; }
+  .field-input, .field-select-full { width: 100%; padding: 11px 13px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); font-size: 14px; color: var(--color-text); background: var(--color-surface); transition: border-color 0.15s ease; }
+  .field-input:focus, .field-select-full:focus { outline: none; border-color: var(--color-accent); }
+  .field-helper { font-size: 11px; color: var(--color-text-faint); font-style: italic; margin-top: 5px; line-height: 1.4; }
+  .ww-select { position: relative; }
+  .ww-select-native { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; overflow: hidden; }
+  .ww-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; text-align: left; }
+  .ww-select-trigger svg { flex-shrink: 0; color: var(--color-text-faint); transition: transform 0.15s ease; }
+  .ww-select.open .ww-select-trigger svg { transform: rotate(180deg); }
+  .ww-select.disabled .ww-select-trigger { opacity: 0.5; cursor: not-allowed; }
+  .ww-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); padding: 6px; max-height: 212px; overflow-y: auto; z-index: 30; display: none; }
+  .ww-select.open .ww-select-panel { display: block; }
+  .ww-select-option { padding: 10px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text); cursor: pointer; }
+  .ww-select-option:hover { background: var(--color-accent-bg); }
+  .ww-select-option.selected { background: var(--color-accent); color: #fff; font-weight: 600; }
+
+  .toggle-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .toggle-row .field-text { min-width: 0; }
+  .toggle-row .field-label { margin-bottom: 3px; }
+  .switch { position: relative; width: 42px; height: 25px; flex-shrink: 0; display: inline-block; }
+  .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .switch .track { position: absolute; inset: 0; background: var(--color-border); border-radius: 999px; transition: background 0.2s ease; cursor: pointer; }
+  .switch .thumb { position: absolute; top: 3px; left: 3px; width: 19px; height: 19px; background: #fff; border-radius: 50%; transition: transform 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+  .switch input:checked ~ .track { background: var(--color-primary); }
+  .switch input:checked ~ .track .thumb { transform: translateX(17px); }
+  .manual-timing-fields { display: none; margin-top: 14px; }
+  .manual-timing-fields.show { display: block; }
+
+  .btn-save { appearance: none; border: none; background: var(--color-primary); color: #fff; font-size: 14px; font-weight: 600; padding: 10px 22px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s ease; display: flex; align-items: center; gap: 8px; }
+  .btn-save:disabled { background: #C9CCD1; color: #fff; cursor: not-allowed; }
+  .btn-save .spinner { display: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; animation: spin 0.8s linear infinite; }
+  .btn-save.loading .spinner { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .save-all-bar { position: absolute; left: 16px; right: 16px; bottom: 16px; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); padding: 10px 10px 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 10px 24px rgba(27,36,48,0.14); transform: translateY(16px); opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 40; }
+  .save-all-bar.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .save-all-text { font-size: 13px; font-weight: 500; color: var(--color-text); }
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 90px; background: var(--color-primary); color: #fff; padding: 12px 16px; border-radius: var(--radius-sm); font-size: var(--text-label); font-weight: 500; transform: translateY(40px); opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 50; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+  .toast.show { transform: translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
@@ -74,24 +108,114 @@
   </div>
 
   <div class="content">
-    <div class="section-card">
-      <div class="section-title">Auto-Preconfigured</div>
-      <div class="section-intro">W2 adds 2 Wiegand reader ports over the expansion bus — plug and play, no pairing step. There's nothing to configure here; it claims I/O 1–4 below for its readers' REX/DPS signals automatically.</div>
-      <div class="io-port-row">
-        <div class="io-port-head"><span class="io-port-name">I/O 1</span><span class="io-port-locked-tag">REX 1 · Output</span></div>
-      </div>
-      <div class="io-port-row">
-        <div class="io-port-head"><span class="io-port-name">I/O 2</span><span class="io-port-locked-tag">DPS 1 · Output</span></div>
-      </div>
-      <div class="io-port-row">
-        <div class="io-port-head"><span class="io-port-name">I/O 3</span><span class="io-port-locked-tag">REX 2 · Output</span></div>
-      </div>
-      <div class="io-port-row">
-        <div class="io-port-head"><span class="io-port-name">I/O 4</span><span class="io-port-locked-tag">DPS 2 · Output</span></div>
-      </div>
-    </div>
+    <div class="section-card" id="port-1"></div>
+    <div class="section-card" id="port-2"></div>
   </div>
+
+  <div class="save-all-bar" id="save-all-bar">
+    <span class="save-all-text">Unsaved changes</span>
+    <button class="btn-save" id="save-all-btn" disabled onclick="trySaveAll()">
+      <span class="spinner"></span><span>Save All</span>
+    </button>
+  </div>
+  <div id="toast" class="toast"></div>
 </div>
+
+<script>
+const READERS = ['Wiegand 4','Wiegand 8','Wiegand 26 Standard','Wiegand 26 H10301','Wiegand 32','Wiegand 34 Fac 1 Byte','Wiegand 34 Fac 2 Byte','Wiegand 35 Corporate 1000','Wiegand 36','Wiegand 37 H10302','Wiegand 37 H10304','Wiegand 42','Wiegand 48 Corporate 1000','RAW'];
+function portHtml(n){
+  return `
+    <div class="section-title" style="margin-bottom:14px;">Wiegand Port ${n}</div>
+    <div class="field-group">
+      <label class="field-label">Reader Type</label>
+      <select class="field-select-full" id="reader-${n}" onchange="markDirty()">
+        ${READERS.map((r,i)=>`<option${i===2?' selected':''}>${r}</option>`).join('')}
+      </select>
+    </div>
+    <div class="toggle-row">
+      <div class="field-text"><div class="field-label">Manual Timing</div><div class="field-helper" style="margin-top:3px;">Set exact Pulse/Interpulse widths instead of using the Reader Type preset's built-in timing.</div></div>
+      <label class="switch"><input type="checkbox" onchange="setManualTiming(${n}, this.checked)"><span class="track"><span class="thumb"></span></span></label>
+    </div>
+    <div class="manual-timing-fields" id="manual-${n}">
+      <div class="field-group"><label class="field-label">Pulse (μs)</label><input class="field-input" value="100" oninput="markDirty()"></div>
+      <div class="field-group"><label class="field-label">Interpulse (μs)</label><input class="field-input" value="1000" oninput="markDirty()"></div>
+    </div>`;
+}
+document.getElementById('port-1').innerHTML = portHtml(1);
+document.getElementById('port-2').innerHTML = portHtml(2);
+
+let dirty = false;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+function updateSaveAllBar(){
+  document.getElementById('save-all-bar').classList.toggle('show', dirty);
+  document.getElementById('save-all-btn').disabled = !dirty;
+  document.querySelector('.content').style.paddingBottom = dirty ? '96px' : '24px';
+}
+function markDirty(){ dirty = true; updateSaveAllBar(); }
+function setManualTiming(n, on){
+  document.getElementById('reader-' + n).disabled = on;
+  document.getElementById('manual-' + n).classList.toggle('show', on);
+  markDirty();
+}
+function trySaveAll(){
+  const btn = document.getElementById('save-all-btn');
+  if(btn.disabled) return;
+  btn.classList.add('loading'); btn.disabled = true;
+  setTimeout(()=>{ btn.classList.remove('loading'); dirty = false; updateSaveAllBar(); toast('Saved'); }, 900);
+}
+
+function enhanceSelects(){
+  document.querySelectorAll('select.field-select-full:not(.ww-select-native)').forEach(function(sel){
+    sel.classList.remove('field-select-full');
+    sel.classList.add('ww-select-native');
+    const wrap = document.createElement('div');
+    wrap.className = 'ww-select';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'field-select-full ww-select-trigger';
+    trigger.innerHTML = '<span class="ww-select-value"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+    wrap.appendChild(trigger);
+    const panel = document.createElement('div');
+    panel.className = 'ww-select-panel';
+    wrap.appendChild(panel);
+    function renderOptions(){
+      panel.innerHTML = '';
+      Array.from(sel.options).forEach(function(opt){
+        const row = document.createElement('div');
+        row.className = 'ww-select-option' + (opt.selected ? ' selected' : '');
+        row.textContent = opt.textContent;
+        row.onclick = function(){ sel.value = opt.value; sel.dispatchEvent(new Event('change', {bubbles:true})); wrap.classList.remove('open'); };
+        panel.appendChild(row);
+      });
+    }
+    function syncTrigger(){
+      const opt = sel.options[sel.selectedIndex];
+      trigger.querySelector('.ww-select-value').textContent = opt ? opt.textContent : '';
+      wrap.classList.toggle('disabled', sel.disabled);
+      renderOptions();
+    }
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(sel.disabled) return;
+      document.querySelectorAll('.ww-select.open').forEach(function(w){ if(w!==wrap) w.classList.remove('open'); });
+      wrap.classList.toggle('open');
+    });
+    sel.addEventListener('change', syncTrigger);
+    new MutationObserver(syncTrigger).observe(sel, {attributes:true, attributeFilter:['disabled']});
+    syncTrigger();
+  });
+}
+document.addEventListener('click', function(e){
+  document.querySelectorAll('.ww-select.open').forEach(function(w){ if(!w.contains(e.target)) w.classList.remove('open'); });
+});
+enhanceSelects();
+</script>
 
 </body>
 </html>
