@@ -4,6 +4,7 @@
    expansion-boards-settings.html and add-expansion-board.html. */
 .swipe { position:relative; margin:0 var(--space-6) var(--space-6); overflow:visible; }
 .swipe > .swipe-card > .board-row { margin:0; }
+.swipe-card, .swipe-card a { -webkit-user-drag:none; user-select:none; -webkit-user-select:none; }
 .swipe-card { position:relative; transform:translateX(0); transition:transform .22s cubic-bezier(.2,.8,.2,1); touch-action:pan-y; }
 .swipe.open .swipe-card { transform:translateX(-80px); }
 .swipe.dragging .swipe-card { transition:none; }

@@ -23,11 +23,17 @@ window.WWBoards = (function(){
     wrap.innerHTML = '<button type="button" class="swipe-trash" aria-label="Delete board">' + TRASH + '</button><div class="swipe-card">' + rowHtml + '</div>';
     var card = wrap.querySelector('.swipe-card');
     var trash = wrap.querySelector('.swipe-trash');
-    var startX = null, moved = false, base = 0;
+    var startX = null, lastX = 0, moved = false, base = 0;
 
-    card.addEventListener('pointerdown', function(e){ startX = e.clientX; moved = false; base = wrap.classList.contains('open') ? -80 : 0; });
+    // A card that is a link would start the browser's native link drag and cancel the pointer events: forbid it.
+    card.addEventListener('dragstart', function(e){ e.preventDefault(); });
+    card.addEventListener('pointerdown', function(e){
+      startX = e.clientX; lastX = e.clientX; moved = false; base = wrap.classList.contains('open') ? -80 : 0;
+      try { card.setPointerCapture(e.pointerId); } catch(err) {}
+    });
     card.addEventListener('pointermove', function(e){
       if(startX === null) return;
+      lastX = e.clientX;
       var dx = e.clientX - startX;
       if(Math.abs(dx) > 6){ moved = true; wrap.classList.add('dragging'); }
       if(moved){
@@ -37,9 +43,9 @@ window.WWBoards = (function(){
         trash.style.transform = 'scale(' + (0.6 + 0.4 * (-x / 80)) + ')';
       }
     });
-    function endDrag(e){
+    function endDrag(){
       if(startX === null) return;
-      var dx = e.clientX - startX;
+      var dx = lastX - startX;   // last position seen while moving (a cancelled pointer has no usable clientX)
       var x = Math.max(-80, Math.min(0, base + dx));
       startX = null;
       wrap.classList.remove('dragging');
