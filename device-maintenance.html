@@ -248,16 +248,11 @@
     <!-- ============ Tab 2: Security (sketch 008 winner B) ============ -->
     <div class="settings-tab-panel" id="panel-security">
       <div class="section-card">
-        <div class="section-heading">Device Login</div>
+        <div class="section-heading">Device Password</div>
 
         <div class="safety-callout danger-tint">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17.5a1.6 1.6 0 0 0 1.4 2.5h16.2a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"/></svg>
-          <span class="safety-callout-text">This is the login for this physical device. If you forget the new password, you'll need a factory reset to get back in.</span>
-        </div>
-
-        <div class="field-group">
-          <label class="field-label">Login</label>
-          <input class="field-input" id="sec-login" value="installer" oninput="markDirtySec()">
+          <span class="safety-callout-text">This is the password for this physical device. It is also the encryption key. If you forget the new password, you'll need a factory reset to get back in.</span>
         </div>
 
         <div class="field-group">
@@ -291,9 +286,9 @@
 
         <div class="confirm-reveal" id="sec-confirm-reveal">
           <div class="confirm-reveal-inner danger">
-            <div class="confirm-reveal-text">Change this device's login now? Make sure you'll remember the new password — there's no recovery without a factory reset.</div>
+            <div class="confirm-reveal-text">Change this device's password now? Make sure you'll remember the new password — there's no recovery without a factory reset.</div>
             <div class="confirm-reveal-actions">
-              <button class="btn-confirm-go" onclick="trySaveSec()">Change Login</button>
+              <button class="btn-confirm-go" onclick="trySaveSec()">Change Password</button>
             </div>
           </div>
         </div>
@@ -641,10 +636,9 @@ function validateSec(){
 }
 function updateSecSaveState(){
   const btn = document.getElementById('sec-save-btn');
-  const login = document.getElementById('sec-login').value.trim();
   const newpass = document.getElementById('sec-newpass').value;
   const confirmpass = document.getElementById('sec-confirmpass').value;
-  const valid = login.length > 0 && newpass.length >= 8 && confirmpass === newpass;
+  const valid = newpass.length >= 8 && confirmpass === newpass;
   btn.disabled = !(secState.dirty && valid);
 }
 function openSecConfirm(){

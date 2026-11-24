@@ -26,7 +26,7 @@
   .back-btn { appearance:none; border:none; background:none; color:var(--color-text); cursor:pointer; padding:2px; display:flex; flex-shrink:0; }
   .screen-title-text { font-size:var(--text-xl); font-weight:600; }
 
-  .content { flex:1; overflow-y:auto; padding-bottom:var(--space-12); position:relative; }
+  .content { flex:1; overflow-y:auto; padding-bottom:var(--floating-bar-inset); position:relative; }
 
   .section-card { background:var(--color-surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); margin:0 var(--space-4) var(--space-4); padding:var(--space-4); }
   .section-heading { font-size:var(--text-xs); font-weight:600; letter-spacing:0.02em; color:var(--color-text-muted); margin-bottom:var(--space-4); }
@@ -139,15 +139,8 @@
 
     <div class="section-card">
       <div class="section-heading">Relay Failsafe</div>
-      <div class="section-intro">Each relay has its own fail state per trigger — power loss and radio-link loss are independent.</div>
+      <div class="section-intro">Each relay has its own fail state when the radio link is lost.</div>
       <div class="subsection-heading">Relay 1</div>
-      <div class="io-port-head" style="margin-bottom:var(--space-2);">
-        <span class="field-label" style="margin-bottom:0;">On Power Loss</span>
-        <div class="io-seg" >
-          <button type="button" class="active" onclick="setRelay(event)">Fail Secure</button>
-          <button type="button" onclick="setRelay(event)">Fail Safe</button>
-        </div>
-      </div>
       <div class="io-port-head">
         <span class="field-label" style="margin-bottom:0;">On Radio-Link Loss</span>
         <div class="io-seg" >
@@ -157,13 +150,6 @@
       </div>
       <div class="subsection-divider"></div>
       <div class="subsection-heading">Relay 2</div>
-      <div class="io-port-head" style="margin-bottom:var(--space-2);">
-        <span class="field-label" style="margin-bottom:0;">On Power Loss</span>
-        <div class="io-seg" >
-          <button type="button" onclick="setRelay(event)">Fail Secure</button>
-          <button type="button" class="active" onclick="setRelay(event)">Fail Safe</button>
-        </div>
-      </div>
       <div class="io-port-head">
         <span class="field-label" style="margin-bottom:0;">On Radio-Link Loss</span>
         <div class="io-seg" >
@@ -173,7 +159,7 @@
       </div>
       <div class="safety-callout" style="margin-top:var(--space-4);">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17.5a1.6 1.6 0 0 0 1.4 2.5h16.2a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"/></svg>
-        <span class="safety-callout-text">How a relay behaves on power or radio-link loss can affect fire-egress and security compliance for this site — check local code before changing it.</span>
+        <span class="safety-callout-text">How a relay behaves on radio-link loss can affect fire-egress and security compliance for this site — check local code before changing it.</span>
       </div>
     </div>
   </div>
@@ -236,12 +222,6 @@ function setIOFunction(port, func, evt){
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   markDirty('io');
-}
-function setRelay(evt){
-  const btn = evt.currentTarget;
-  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  markDirty('iorelay');
 }
 function setRelayRf(evt){
   const btn = evt.currentTarget;

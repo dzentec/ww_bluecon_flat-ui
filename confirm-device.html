@@ -153,7 +153,7 @@
   .device-card-body { padding:var(--space-1) var(--space-6) var(--space-6); transition:padding-top 0.4s cubic-bezier(.4,0,.2,1); }
   .device-card-name { font-size:var(--text-xl); font-weight:600; text-align:center; margin-bottom:var(--space-4); }
 
-  /* ---------- Variant E: confirm, then reveal Log In in place ---------- */
+  /* ---------- Confirm animation (no Log In step: the app already knows the password) ---------- */
   /* The checkmark badge (.device-photo-badge) is NOT touched by .confirmed — it's one
      fixed element in one fixed spot (card's top-right corner) for the whole interaction,
      never faded/rescaled/relocated. Only the photo collapses under it. */
@@ -201,11 +201,6 @@
   /* ---------- Dev state switcher (outside phone) ---------- */
 
   /* ---------- Toast ---------- */
-  /* ---------- Variant D: combined with Log In (exploratory) ---------- */
-  .login-divider-label {
-    font-size:var(--text-sm); color:var(--color-text-muted); font-weight:500;
-    margin:var(--space-1) 0 var(--space-4); padding-top:var(--space-4); border-top:1px solid var(--color-border);
-  }
   .field-group { margin-bottom:var(--space-3); }
   .field-label { font-size:var(--text-sm); color:var(--color-text-muted); margin-bottom:var(--space-2); display:block; }
   .field-input-wrap { position:relative; }

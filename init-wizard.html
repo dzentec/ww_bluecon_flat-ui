@@ -189,6 +189,7 @@
   .toast.show { transform:translateY(0); opacity:1; }
   .toast.error { background:var(--color-danger); }
 
+  .btn-primary-full:disabled { opacity:0.5; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -213,6 +214,11 @@
           <div class="choice-card" onclick="chooseQR('a')">
             <span class="choice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M17 20h3"/></svg></span>
             <span class="choice-text"><span class="choice-title">Scan QR Code</span><span class="choice-sub">Fastest way — for a factory-new device with its box or label</span></span>
+            <span class="choice-chevron">›</span>
+          </div>
+          <div class="choice-card" onclick="chooseSerial('a')">
+            <span class="choice-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4M10.5 10v4M14 10v4M17 10v4" stroke-width="1.5"/></svg></span>
+            <span class="choice-text"><span class="choice-title">Add by Serial Number</span><span class="choice-sub">Type the serial number from the device label — no camera needed</span></span>
             <span class="choice-chevron">›</span>
           </div>
           <div class="choice-card" onclick="choosePoh('a')">
@@ -251,6 +257,39 @@
         <div id="a-qr-verify-actions" style="display:none;width:100%;"></div>
       </div>
 
+      <div class="wiz-screen centered" id="a-screen-serial-entry">
+        <div class="screen-title" style="padding:0;margin-bottom:2px;">Add by Serial Number</div>
+        <div class="screen-sub" style="padding:0;margin:-2px 0 var(--space-4);max-width:300px;">Enter the serial number printed on the device label. The app checks the devices nearby one by one.</div>
+        <div style="width:100%;max-width:300px;text-align:left;">
+          <div class="field-group">
+            <label class="field-label">Serial Number</label>
+            <input class="field-input" id="a-serial-input" placeholder="e.g. 0001-DEMO" autocapitalize="characters" autocomplete="off" oninput="serialInput('a')" onkeydown="if(event.key==='Enter')startSerialSearch('a')">
+          </div>
+          <button class="btn-primary-full" id="a-serial-search-btn" disabled onclick="startSerialSearch('a')">Search</button>
+        </div>
+      </div>
+
+      <div class="wiz-screen centered" id="a-screen-serial-search">
+        <div class="radar-stage" style="width:120px;height:120px;">
+          <div class="radar-ring" style="--ring-start:48px; --ring-end:120px; width:48px; height:48px; animation-delay:0s;"></div>
+          <div class="radar-ring" style="--ring-start:48px; --ring-end:120px; width:48px; height:48px; animation-delay:0.8s;"></div>
+          <div class="radar-core" style="width:48px;height:48px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20v-7M8 10a5.7 5.7 0 0 1 8 0M5 7a10 10 0 0 1 14 0M12 13a1 1 0 1 0 0-.01"/></svg>
+          </div>
+        </div>
+        <div class="wiz-heading" id="a-serial-search-heading">Searching…</div>
+        <div class="wiz-sub">Connecting to the devices nearby one by one and reading their serial numbers.</div>
+      </div>
+
+      <div class="wiz-screen centered" id="a-screen-serial-notfound">
+        <div class="radar-stage" style="width:70px;height:70px;">
+          <div class="radar-core failed" style="width:70px;height:70px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></div>
+        </div>
+        <div class="wiz-heading">No device with this serial number</div>
+        <div class="wiz-sub" id="a-serial-notfound-text">None of the devices nearby has this serial number.</div>
+        <button class="btn-primary-full" style="max-width:280px;" onclick="chooseSerial('a')">Try Again</button>
+      </div>
+
       <div class="wiz-screen centered" id="a-screen-poh-instructions">
         <div class="screen-title" style="padding:0;margin-bottom:2px;">Reset the Device</div>
         <div class="screen-sub" style="padding:0;margin:-2px 0 var(--space-2);">This erases the device's current pairing and starts fresh.</div>
@@ -283,22 +322,12 @@
       </div>
 
       <div class="wiz-screen" id="a-screen-mandatory-security">
-        <div class="screen-title" style="padding:0 0 2px;">Set a Login &amp; Password</div>
-        <div class="screen-sub" style="padding:0;margin:-2px 0 var(--space-4);">Required before you can finish setup — this device cannot be left with no login configured.</div>
+        <div class="screen-title" style="padding:0 0 2px;">Set a Password</div>
+        <div class="screen-sub" style="padding:0;margin:-2px 0 var(--space-4);">Required before you can finish setup — this device cannot be left with the factory password.</div>
         <div class="section-card">
           <div class="safety-callout danger-tint">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17.5a1.6 1.6 0 0 0 1.4 2.5h16.2a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"/></svg>
-            <span class="safety-callout-text">This is the login for this physical device. If you forget the password, you'll need a factory reset to get back in.</span>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Choose Credentials</label>
-            <select class="field-select-full" id="a-cred-select" onchange="chooseCredential('a')">
-              <option value="">— Custom —</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Login</label>
-            <input class="field-input" id="a-sec-login" value="installer" oninput="markMandatorySecDirty('a')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17.5a1.6 1.6 0 0 0 1.4 2.5h16.2a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+            <span class="safety-callout-text">This is the password for this physical device. It is also the encryption key. If you forget it, you'll need a factory reset to get back in.</span>
           </div>
           <div class="field-group">
             <label class="field-label">Password</label>
@@ -322,7 +351,6 @@
             <div class="field-error" id="a-sec-confirmpass-error">Passwords don't match</div>
           </div>
           <div class="save-row-split">
-            <button class="btn-outline" type="button" onclick="storeCredentials('a')">Store Credentials</button>
             <button class="btn-save" id="a-sec-save-btn" disabled onclick="trySaveMandatorySec('a')">
               <span class="spinner"></span><span>Save &amp; Continue</span>
             </button>
@@ -378,7 +406,34 @@ function backBtn(label, onclick){
 }
 /* ---------- Entry ---------- */
 function chooseQR(v){ wiz[v].path = 'qr'; showScreen(v, 'qr-scan', backBtn('Back', `showScreen('${v}','entry')`)); }
+function chooseSerial(v){
+  wiz[v].path = 'serial';
+  showScreen(v, 'serial-entry', backBtn('Back', `showScreen('${v}','entry')`));
+  setTimeout(()=>{ const i = document.getElementById(v+'-serial-input'); if(i) i.focus(); }, 50);
+}
 function choosePoh(v){ wiz[v].path = 'poh'; showScreen(v, 'poh-instructions', backBtn('Back', `showScreen('${v}','entry')`)); }
+
+/* ---------- Serial-number path: type -> search (nearby devices one by one) -> verify -> Set a Password | not found ---------- */
+function normSerial(x){ return x.replace(/[\s-]/g, '').toUpperCase(); }
+function serialInput(v){
+  document.getElementById(v+'-serial-search-btn').disabled = !document.getElementById(v+'-serial-input').value.trim();
+}
+function startSerialSearch(v){
+  const val = document.getElementById(v+'-serial-input').value.trim();
+  if(!val) return;
+  showScreen(v, 'serial-search', '');
+  document.getElementById(v+'-serial-search-heading').textContent = 'Searching for ' + val + '…';
+  clearTimeout(wiz[v]._serialTimer);
+  // Demo: the device with serial 0001-DEMO (any case, with or without the dash) is found.
+  wiz[v]._serialTimer = setTimeout(()=>{
+    if(normSerial(val) === '0001DEMO') startQrVerify(v, 'Checking that this is a new device that can be set up.');
+    else serialNotFound(v, val);
+  }, 2200);
+}
+function serialNotFound(v, val){
+  document.getElementById(v+'-serial-notfound-text').textContent = 'None of the devices nearby has the serial number ' + val + '. Check the number and that the device is powered on and within range.';
+  showScreen(v, 'serial-notfound', '');
+}
 
 /* ---------- QR path: scan -> search -> (not nearby | verify -> fail | credentials) ---------- */
 function simulateQRScan(v){ startQrSearch(v); }
@@ -406,12 +461,12 @@ function qrNotNearby(v){
   btn.onclick = () => { window.location.href = 'device-scan.html'; };
   content.appendChild(btn);
 }
-function startQrVerify(v){
+function startQrVerify(v, sub){
   showScreen(v, 'qr-verify', '');
   document.getElementById(v+'-qr-verify-core').className = 'radar-core';
   document.getElementById(v+'-qr-verify-core').innerHTML = '<span class="spin-ring" style="width:26px;height:26px;border-radius:50%;border:3px solid color-mix(in srgb, var(--color-on-primary) 35%, transparent);border-top-color:var(--color-on-primary);animation:spin 0.8s linear infinite;display:block;"></span>';
   document.getElementById(v+'-qr-verify-heading').textContent = 'Verifying device identity…';
-  document.getElementById(v+'-qr-verify-sub').textContent = "Checking the device's factory credentials against the QR code you scanned.";
+  document.getElementById(v+'-qr-verify-sub').textContent = sub || "Checking the device's factory credentials against the QR code you scanned.";
   document.getElementById(v+'-qr-verify-actions').style.display = 'none';
   document.getElementById(v+'-qr-verify-actions').innerHTML = '';
   // Demo: verification succeeds. Add ?verifyfail to the URL to see the failure state.
@@ -496,7 +551,7 @@ function countdownTimeout(v){
   document.getElementById(v+'-retry-btn').onclick = () => { closeFullConfirm(v); pohConnect(v); };
 }
 
-/* ---------- Mandatory login & password (no skip, no back) ---------- */
+/* ---------- Mandatory password (no skip, no back) ---------- */
 function showMandatorySecurity(v){ showScreen(v, 'mandatory-security', ''); }
 function togglePw(id){
   const input = document.getElementById(id);
@@ -521,10 +576,9 @@ function validateMandatorySec(v){
 }
 function updateMandatorySecSaveState(v){
   const btn = document.getElementById(v+'-sec-save-btn');
-  const login = document.getElementById(v+'-sec-login').value.trim();
   const newpass = document.getElementById(v+'-sec-newpass').value;
   const confirmpass = document.getElementById(v+'-sec-confirmpass').value;
-  const valid = login.length > 0 && newpass.length >= 8 && confirmpass === newpass;
+  const valid = newpass.length >= 8 && confirmpass === newpass;
   btn.disabled = !(wiz[v].secDirty && valid);
 }
 function trySaveMandatorySec(v){
@@ -533,65 +587,8 @@ function trySaveMandatorySec(v){
   if(btn.disabled) return;
   btn.classList.add('loading');
   btn.disabled = true;
-  // New login/password set -> straight to Home (presets can be applied later from Stored Presets).
+  // New password set -> straight to Home (presets can be applied later from Stored Presets).
   setTimeout(()=>{ window.location.href = 'home.html'; }, 900);
-}
-
-/* ---------- Stored credentials: reuse a login/password pair across devices ---------- */
-let savedCredentials = [
-  { login:'installer', password: 'installer' },
-];
-const MAX_SAVED_CREDENTIALS = 8;
-
-function credentialsValid(v){
-  const login = document.getElementById(v+'-sec-login').value.trim();
-  const newpass = document.getElementById(v+'-sec-newpass').value;
-  const confirmpass = document.getElementById(v+'-sec-confirmpass').value;
-  return login.length > 0 && newpass.length >= 8 && confirmpass === newpass;
-}
-
-function renderCredentialSelect(v){
-  const sel = document.getElementById(v+'-cred-select');
-  if(!sel) return;
-  const loginField = document.getElementById(v+'-sec-login');
-  const current = loginField ? loginField.value.trim() : '';
-  sel.innerHTML = '<option value="">— Custom —</option>' +
-    savedCredentials.map(c => '<option value="'+c.login+'">'+c.login+'</option>').join('');
-  sel.value = savedCredentials.some(c => c.login === current) ? current:'';
-  if(sel._wwSync) sel._wwSync();
-}
-
-function chooseCredential(v){
-  const sel = document.getElementById(v+'-cred-select');
-  const found = savedCredentials.find(c => c.login === sel.value);
-  if(found){
-    document.getElementById(v+'-sec-login').value = found.login;
-    document.getElementById(v+'-sec-newpass').value = found.password;
-    document.getElementById(v+'-sec-confirmpass').value = found.password;
-    validateMandatorySec(v);
-  }
-}
-
-function storeCredentials(v){
-  if(!credentialsValid(v)){
-    showToast(v, 'Set a valid login and matching password (8+ chars) first', true);
-    return;
-  }
-  const login = document.getElementById(v+'-sec-login').value.trim();
-  const password = document.getElementById(v+'-sec-newpass').value;
-  const existing = savedCredentials.find(c => c.login === login);
-  if(existing){
-    existing.password = password;
-  } else if(savedCredentials.length >= MAX_SAVED_CREDENTIALS){
-    showToast(v, 'You can store up to 8 credential sets — remove one first', true);
-    return;
-  } else {
-    savedCredentials.push({ login, password });
-  }
-  renderCredentialSelect('a');
-  const sel = document.getElementById(v+'-cred-select');
-  if(sel){ sel.value = login; if(sel._wwSync) sel._wwSync(); }
-  showToast(v, 'Credentials stored as "' + login + '"');
 }
 
 /* ---------- Custom rounded-corner dropdown, replacing the native <select> popup ---------- */
@@ -661,8 +658,6 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape') document.querySelectorAll('.ww-select.open').forEach(function(w){ w.classList.remove('open'); });
 });
 
-renderCredentialSelect('a');
-chooseCredential('a');
 enhanceSelects();
 </script>
 </body>

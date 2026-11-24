@@ -1,0 +1,25 @@
+/* Expansion board cards: swipe-left (or tap, on a card with no action of its own) reveals a red trash
+   button; tapping it plays a short removal animation (card rolls back, dot goes grey and out, card
+   collapses). Same behaviour as the app (SwipeToDelete in board_widgets.dart). Used by
+   expansion-boards-settings.html and add-expansion-board.html. */
+.swipe { position:relative; margin:0 var(--space-6) var(--space-6); overflow:visible; }
+.swipe > .swipe-card > .board-row { margin:0; }
+.swipe-card { position:relative; transform:translateX(0); transition:transform .22s cubic-bezier(.2,.8,.2,1); touch-action:pan-y; }
+.swipe.open .swipe-card { transform:translateX(-80px); }
+.swipe.dragging .swipe-card { transition:none; }
+.swipe-trash { position:absolute; right:0; top:0; bottom:0; width:72px; border:none; padding:0; border-radius:var(--radius-lg); background:var(--color-danger); color:var(--color-on-primary); display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transform:scale(.6); transform-origin:right center; transition:opacity .22s ease-out, transform .22s ease-out; pointer-events:none; }
+.swipe.open .swipe-trash { opacity:1; transform:scale(1); pointer-events:auto; }
+.swipe.dragging .swipe-trash { transition:none; }
+.swipe.removing { pointer-events:none; }
+.swipe.removing .swipe-card { transform:translateX(0); }
+.swipe.removing .swipe-trash { opacity:0; transform:scale(.6); }
+.swipe.removing .board-dot { background:var(--color-border-strong); transition:background .25s ease .15s, opacity .25s ease .45s; opacity:0; }
+.swipe.collapse { max-height:0 !important; opacity:0; margin-bottom:0; overflow:hidden; transition:max-height .32s ease-in-out, opacity .32s ease-in-out, margin-bottom .32s ease-in-out; }
+
+/* A bright head with a long fading tail runs around the first empty slot while the bus scan runs. */
+@property --snake-a { syntax:'<angle>'; inherits:false; initial-value:0deg; }
+@keyframes snake-run { to { --snake-a:360deg; } }
+.board-slot-empty.scanning::after { content:''; position:absolute; inset:-1px; border-radius:inherit; padding:2px; pointer-events:none;
+  background:conic-gradient(from var(--snake-a), transparent 0deg, transparent 115deg, var(--color-accent) 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:snake-run 3.9s linear infinite; }

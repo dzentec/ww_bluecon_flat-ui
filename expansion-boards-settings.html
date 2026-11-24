@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WW BlueCon — Expansion Boards</title>
 <link rel="stylesheet" href="themes/default.css">
+<link rel="stylesheet" href="themes/boards.css">
 <script src="themes/theme.js"></script>
+<script src="themes/boards.js"></script>
 <style>
   * { box-sizing:border-box; }
   body { margin:0; font-family:var(--font-sans); background:var(--chrome-stage); color:var(--color-text); padding:var(--space-12) var(--space-4) var(--space-12); }
@@ -26,7 +28,7 @@
   .back-btn { appearance:none; border:none; background:none; color:var(--color-text); cursor:pointer; padding:2px; display:flex; flex-shrink:0; }
   .screen-title-text { font-size:var(--text-xl); font-weight:600; }
 
-  .content { flex:1; overflow-y:auto; padding-bottom:var(--space-12); position:relative; }
+  .content { flex:1; overflow-y:auto; padding-bottom:var(--floating-bar-inset); position:relative; }
 
   .section-card { background:var(--color-surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); margin:0 var(--space-6) var(--space-4); padding:var(--space-4); }
   .section-title { font-size:var(--text-lg); font-weight:700; color:var(--color-text); margin-bottom:var(--space-4); }
@@ -93,7 +95,7 @@
   <div class="content">
     <div id="board-list"></div>
 
-    <div class="section-card">
+    <div class="section-card" id="global-card">
       <div class="global-failsafe-head">
         <div class="section-title">Global Relay Failsafe</div>
         <label class="switch"><input type="checkbox" id="g-enabled" checked onchange="setGlobalEnabled(this.checked)"><span class="track"><span class="thumb"></span></span></label>
@@ -130,25 +132,31 @@
 <script>
 document.querySelector('#ww-tabbar .active')?.scrollIntoView({inline:'center', block:'nearest'});
 
-const boards = [
-  { name:'W2', desc: 'Desc: 2 Wiegand ports', serial: 'Serial: W2B-0021-7743', href: 'board-w2.html' },
-  { name:'R2IO', desc: 'Desc: 2 Inputs & 2 Relay out', serial: 'Serial: R2IOB-0237-7743', href: 'board-r2io.html' },
-];
 const MAX_BOARDS = 4;
 
 function renderBoards(){
   const list = document.getElementById('board-list');
-  let html = boards.map(b => `
-    <a class="board-row" href="${b.href}">
-      <span class="board-name">${b.name}</span>
-      <span class="board-info"><span class="board-desc">${b.desc}</span><span class="board-serial">${b.serial}</span></span>
+  list.innerHTML = '';
+  const installed = WWBoards.load();
+  installed.forEach(name => {
+    const m = WWBoards.META[name];
+    const row = `
+    <a class="board-row" href="${m.href}">
+      <span class="board-name">${name}</span>
+      <span class="board-info"><span class="board-desc">${m.desc}</span><span class="board-serial">${m.serial}</span></span>
       <svg class="board-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
       <span class="board-dot"></span>
-    </a>`).join('');
-  for(let i = boards.length; i < MAX_BOARDS; i++){
-    html += `<div class="board-slot-empty"><span class="slot-dot"></span></div>`;
+    </a>`;
+    list.appendChild(WWBoards.swipeWrap(row, true, () => {
+      WWBoards.save(WWBoards.load().filter(n => n !== name));
+      renderBoards();
+    }));
+  });
+  for(let i = installed.length; i < MAX_BOARDS; i++){
+    list.insertAdjacentHTML('beforeend', `<div class="board-slot-empty"><span class="slot-dot"></span></div>`);
   }
-  list.innerHTML = html;
+  // Global Relay Failsafe only when an installed board has relays (R2IO); W2 has none.
+  document.getElementById('global-card').style.display = WWBoards.hasRelayBoard(installed) ? '' : 'none';
 }
 // Shared with board-r2io.html: while Global Relay Failsafe is on, its modes apply to every relay on the boards.
 function loadGlobal(){ try { return Object.assign({enabled:true, pl:'secure', rl:'secure'}, JSON.parse(localStorage.getItem('wwGlobal')||'{}')); } catch(e) { return {enabled:true, pl:'secure', rl:'secure'}; } }

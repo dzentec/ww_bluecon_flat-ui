@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WW BlueCon — Add Expansion Board</title>
 <link rel="stylesheet" href="themes/default.css">
+<link rel="stylesheet" href="themes/boards.css">
 <script src="themes/theme.js"></script>
+<script src="themes/boards.js"></script>
 <style>
   * { box-sizing:border-box; }
   body { margin:0; font-family:var(--font-sans); background:var(--chrome-stage); color:var(--color-text); padding:var(--space-12) var(--space-4) var(--space-12); }
@@ -91,10 +93,7 @@
 </div>
 
 <script>
-let boards = [
-  { name:'W2', desc: 'Desc: 2 Wiegand ports', serial: 'Serial: W2B-0021-7743', status: 'online' },
-  { name:'R2IO', desc: 'Desc: 2 Inputs & 2 Relay out', serial: 'Serial: R2IOB-0237-7743', status: 'online' },
-];
+let boards = WWBoards.load().map(n => ({ name:n, status:'online' }));  // shared with Expansion Boards (settings)
 const MAX_BOARDS = 4;
 let pendingSlot = null;
 
@@ -106,25 +105,39 @@ function toast(msg){
   el._t = setTimeout(()=>el.classList.remove('show'), 2600);
 }
 
-function renderBoards(){
+function removeBoard(name){
+  const i = boards.findIndex(b => b.name === name);
+  if(i < 0) return;
+  if(boards[i].status === 'pending'){ pendingSlot = null; }   // a detected, unsaved board is just dropped
+  boards.splice(i, 1);
+  WWBoards.save(boards.filter(b => b.status !== 'pending').map(b => b.name));
+  renderBoards();
+}
+
+function renderBoards(scanning){
   const list = document.getElementById('board-list');
-  let html = boards.map(b => `
+  list.innerHTML = '';
+  boards.forEach(b => {
+    const m = WWBoards.META[b.name];
+    const row = `
     <div class="board-row">
       <div class="board-name">${b.name}</div>
-      <div class="board-info"><div class="board-desc">${b.desc}</div><div class="board-serial">${b.serial}</div></div>
+      <div class="board-info"><div class="board-desc">${m.desc}</div><div class="board-serial">${m.serial}</div></div>
       <div class="board-dot${b.status === 'pending' ? ' pending' : ''}"></div>
-    </div>`).join('');
+    </div>`;
+    list.appendChild(WWBoards.swipeWrap(row, false, () => removeBoard(b.name)));
+  });
   for(let i = boards.length; i < MAX_BOARDS; i++){
-    html += `<div class="board-slot-empty"><span class="slot-dot"></span></div>`;
+    // the first empty slot gets the running colour snake while the bus scan is on
+    list.insertAdjacentHTML('beforeend', `<div class="board-slot-empty${scanning && i === boards.length ? ' scanning' : ''}"><span class="slot-dot"></span></div>`);
   }
-  list.innerHTML = html;
 
   const btn = document.getElementById('scan-btn');
   const label = document.getElementById('scan-btn-label');
   if(pendingSlot !== null){
     label.textContent = 'Save';
     btn.disabled = false;
-  } else if(boards.length >= MAX_BOARDS){
+  } else if(boards.length >= MAX_BOARDS || WWBoards.ORDER.every(n => boards.some(b => b.name === n))){
     label.textContent = 'Scan Bus';
     btn.disabled = true;
   } else {
@@ -137,20 +150,23 @@ function scanOrSave(){
   const btn = document.getElementById('scan-btn');
   if(pendingSlot !== null){
     boards[pendingSlot].status = 'online';
+    WWBoards.save(boards.map(b => b.name));
     pendingSlot = null;
     renderBoards();
     toast('Board saved');
     return;
   }
+  renderBoards(true);                       // the snake runs around the first empty slot
   btn.classList.add('loading');
   btn.disabled = true;
   setTimeout(()=>{
     btn.classList.remove('loading');
-    boards.push({ name:'R2IO', desc: 'Desc: 2 Inputs & 2 Relay out', serial: 'Serial: R2IOB-00' + (48 + boards.length) + '-7743', status: 'pending' });
+    const next = WWBoards.ORDER.find(n => !boards.some(b => b.name === n));   // W2 first, then R2IO
+    boards.push({ name:next, status: 'pending' });
     pendingSlot = boards.length - 1;
     renderBoards();
     toast('New board detected');
-  }, 1100);
+  }, 4000);
 }
 
 renderBoards();

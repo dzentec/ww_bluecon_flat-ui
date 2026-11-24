@@ -112,14 +112,14 @@
 </div>
 
 <script>
-const READERS = ['Wiegand 4','Wiegand 8','Wiegand 26 Standard','Wiegand 26 H10301','Wiegand 32','Wiegand 34 Fac 1 Byte','Wiegand 34 Fac 2 Byte','Wiegand 35 Corporate 1000','Wiegand 36','Wiegand 37 H10302','Wiegand 37 H10304','Wiegand 42','Wiegand 48 Corporate 1000','RAW'];
+const READERS = ['AUTO','HID timing','LUMIRING timing','LIFTCENTRAL timing']; // four timing profiles (RT), no card formats
 function portHtml(n){
   return `
     <div class="section-title" style="margin-bottom:var(--space-4);">Wiegand Port ${n}</div>
     <div class="field-group">
       <label class="field-label">Reader Type</label>
       <select class="field-select-full" id="reader-${n}" onchange="markDirty()">
-        ${READERS.map((r,i)=>`<option${i===2?' selected':''}>${r}</option>`).join('')}
+        ${READERS.map((r,i)=>`<option${i===0?' selected':''}>${r}</option>`).join('')}
       </select>
     </div>
     <div class="toggle-row">

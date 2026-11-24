@@ -61,6 +61,15 @@
   --space-8: 32px;
   --space-12: 48px;
 
+  /* ── Layout: room a scrolling page leaves under the floating tab bar (bar ≈ 99px tall) so its last row stays visible.
+        Same value as kFloatingBarInset in the app; a layout constant, not a spacing step. ── */
+  --floating-bar-inset: 104px;
+
+  /* ── Row heights (3): the whole app uses only these; same values as AppTheme.rowInfo / rowList / rowTwoLine ── */
+  --row-info: 28px;      /* label / value row, no divider (System Info, identity) */
+  --row-list: 36px;      /* list row with a divider (monitoring lists) */
+  --row-two-line: 56px;  /* title + subtitle row (actions, boards, presets) */
+
   /* ── Radii (4) ────────────────────────────────────────────── */
   --radius-sm: 8px;      /* tags, chips, list options, inner thumbs */
   --radius-md: 12px;     /* buttons, inputs, small cards, segmented tracks */
